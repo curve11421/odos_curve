@@ -5,33 +5,32 @@ const SHEET_NAME = "Sheet1"; // <-- เปลี่ยนเป็นชื่�
 function doGet(e) {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   const data = sheet.getDataRange().getValues();
-  const headers = data.shift(); // Remove header row
-
+  const headers = data.shift(); 
+  
   const searchKey = e.parameter.key;
   const searchValue = e.parameter.value.toLowerCase();
   
-  let resultData = {};
-  let found = false;
+  let results = []; // เปลี่ยนเป็น Array เพื่อเก็บผลลัพธ์หลายรายการ
   
   let searchIndex = -1;
-  if (searchKey === 'studentID') searchIndex = 0; // Column A
-  if (searchKey === 'thaiName') searchIndex = 1;  // Column B
-  if (searchKey === 'englishName') searchIndex = 4;// Column E
+  if (searchKey === 'studentID') searchIndex = 0;
+  if (searchKey === 'thaiName') searchIndex = 1;
+  if (searchKey === 'englishName') searchIndex = 4;
 
   if (searchIndex !== -1) {
     for (let i = 0; i < data.length; i++) {
-      if (data[i][searchIndex] && data[i][searchIndex].toString().toLowerCase() === searchValue) {
-        // Map data to headers for easy access
+      if (data[i][searchIndex] && data[i][searchIndex].toString().toLowerCase().includes(searchValue)) {
+        let resultData = {};
         headers.forEach((header, index) => {
           resultData[header] = data[i][index];
         });
-        found = true;
-        break;
+        results.push(resultData); // เพิ่มผลลัพธ์ที่เจอเข้าไปใน Array
       }
     }
   }
   
-  return ContentService.createTextOutput(JSON.stringify({ found: found, data: resultData }))
+  // ส่งข้อมูลกลับไปเป็น JSON ที่มี key เป็น 'data' และ value เป็น Array ของผลลัพธ์
+  return ContentService.createTextOutput(JSON.stringify({ data: results }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
