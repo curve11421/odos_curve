@@ -1,4 +1,4 @@
-const SHEET_ID = "1p2RsN5xAWhqVWf1w_Y5r6GK3YHNpuDZ22kD4XRFGaSE"; // <-- ใส่ ID ของ Google Sheet ของคุณที่นี่
+const SHEET_ID = "18pVNW1_3wYdUaOJSJkwPA0MF2h4jaUVJFNQvfHfICoY"; // <-- ใส่ ID ของ Google Sheet ของคุณที่นี่
 const SHEET_NAME = "Sheet1"; // <-- เปลี่ยนเป็นชื่อชีตของคุณ ถ้าไม่ใช่ "Sheet1"
 
 // Function to get data from the sheet
