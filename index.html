@@ -291,7 +291,7 @@
             currentStudentId = data['ID']; // Column A
             
             // 1. Image (Column L)
-            document.getElementById('profileImage').src = data['Image'] || 'https://via.placeholder.com/100';
+            document.getElementById('profileImage').src = data['Link รูปภาพ (.jpg)'] || 'https://via.placeholder.com/100';
             
             // 2. English Name (Column E + F)
             document.getElementById('studentEngName').textContent = `${data['English Name (ชื่อจริง)']} ${data['English Lastname (นามสกุล)']}`;
