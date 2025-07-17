@@ -135,6 +135,7 @@
                     <div class="detail-row"><span>Age:</span><span class="info-age"></span></div>
                     <div class="detail-row"><span>Province:</span><span class="info-province"></span></div>
                     <div class="detail-row"><span>GPA:</span><span class="info-gpa"></span></div>
+                    <div class="detail-row"><span>EnglishGPA:</span><span class="info-EnglishGPA"></span></div>
                     <div class="detail-row"><span>Study Status:</span><span class="info-study-status"></span></div>
                 </div>
 
@@ -230,8 +231,9 @@
                 }
                 
                 card.querySelector('.info-province').textContent = student['จังหวัดตามทะเบียนบ้าน'];
-                card.querySelector('.info-gpa').textContent = student['เกรดเฉลี่ยการศึกษาก่อนหน้า (GPA)'];
-                card.querySelector('.info-study-status').textContent = student['สถานะการเรียน'];
+                card.querySelector('.info-gpa').textContent = student['เกรดเฉลี่ยภาคการศึกษาก่อนหน้า (GPA)'];
+                card.querySelector('.info-EnglishGPA').textContent = student['เกรดวิชาภาษาอังกฤษเทอมก่อนหน้า'];
+                card.querySelector('.info-study-status').textContent = student['อยู่ระหว่างการศึกษา'];
 
                 const studentId = student['ID'];
                 const approveBtn = card.querySelector('.btn-approve');
