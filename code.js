@@ -1,4 +1,4 @@
-const SHEET_ID = "YOUR_GOOGLE_SHEET_ID"; // <-- ใส่ ID ของ Google Sheet ของคุณที่นี่
+const SHEET_ID = "18pVNW1_3wYdUaOJSJkwPA0MF2h4jaUVJFNQvfHfICoY"; // <-- ใส่ ID ของ Google Sheet ของคุณที่นี่
 const SHEET_NAME = "Sheet1"; // <-- ตรวจสอบชื่อ Sheet ของคุณ
 
 function doGet(e) {
