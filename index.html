@@ -24,15 +24,8 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #333;
-        }
-        .header p {
-            margin: 5px 0 0;
-            font-size: 16px;
-        }
+        .header h1 { margin: 0; font-size: 24px; color: #333; }
+        .header p { margin: 5px 0 0; font-size: 16px; }
         .card {
             background-color: #FFFFFF;
             padding: 20px;
@@ -46,126 +39,59 @@
             gap: 20px;
             align-items: flex-end;
         }
-        .search-students .form-group {
+        .search-students .form-group { display: flex; flex-direction: column; }
+        .search-students label { margin-bottom: 8px; font-weight: bold; }
+        .search-students input { padding: 10px; border: 1px solid #CCC; border-radius: 4px; font-size: 16px; }
+        .button-group { display: flex; gap: 10px; padding-top: 28px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .btn-add { background-color: #F8D442; color: #333; }
+        .btn-clear { background-color: #E0E0E0; color: #333; }
+        .btn-approve-all { background-color: #4CAF50; color: white; float: right; margin-bottom: 10px; }
+        .loading, .message { text-align: center; padding: 20px; font-size: 18px; }
+
+        /* Styles for Multiple Student Cards */
+        .student-list-container {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
         }
-        .search-students label {
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        .search-students input {
-            padding: 10px;
-            border: 1px solid #CCC;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            padding-top: 28px; /* Aligns with input fields */
-        }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-add {
-            background-color: #F8D442;
-            color: #333;
-        }
-        .btn-clear {
-            background-color: #E0E0E0;
-            color: #333;
-        }
-        .btn-approve-all {
-            background-color: #4CAF50;
-            color: white;
-            float: right;
-            margin-bottom: 10px;
-        }
-        .student-info-section {
-            display: none; /* Initially hidden */
-            padding: 20px;
-            border: 1px solid #F0F0F0;
-            background-color: #FFF;
-            border-radius: 8px;
-        }
+        .student-card-wrapper { flex-shrink: 0; }
         .student-card {
-            width: 320px;
-            padding: 20px;
-            background-color: #FEFDF7;
-            border: 1px solid #E0E0E0;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 320px; padding: 20px; background-color: #FEFDF7;
+            border: 1px solid #E0E0E0; border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center;
         }
         .student-card .profile-pic img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #F8D442;
-            margin-bottom: 15px;
+            width: 100px; height: 100px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #F8D442; margin-bottom: 15px;
         }
-        .student-card .eng-name {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .student-card .country {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        .student-details {
-            width: 100%;
-            font-size: 14px;
-        }
-        .student-details .detail-row {
-            display: grid;
-            grid-template-columns: 100px 1fr;
-            margin-bottom: 8px;
-        }
-        .student-details .detail-row span:first-child {
-            font-weight: bold;
-            color: #555;
-        }
+        .student-card .eng-name { font-size: 18px; font-weight: bold; }
+        .student-card .country { font-size: 14px; color: #666; margin-bottom: 20px; }
+        .student-details { width: 100%; font-size: 14px; }
+        .student-details .detail-row { display: grid; grid-template-columns: 100px 1fr; margin-bottom: 8px; }
+        .student-details .detail-row span:first-child { font-weight: bold; color: #555; }
         .student-card textarea {
-            width: calc(100% - 20px);
-            height: 60px;
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #CCC;
-            resize: vertical;
+            width: calc(100% - 22px); height: 60px; margin-top: 20px; padding: 10px;
+            border-radius: 4px; border: 1px solid #CCC; resize: vertical;
         }
-        .student-card .action-buttons {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 15px;
+        .student-card .action-buttons { display: flex; justify-content: space-between; width: 100%; margin-top: 15px; }
+        .btn-action { width: 48%; padding: 10px; }
+        .btn-approve { background-color: #4CAF50; color: white; }
+        .btn-disapprove { background-color: #F44336; color: white; }
+
+        /* Modal Styles */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);
         }
-        .btn-action {
-            width: 48%;
-            padding: 10px;
+        .modal-content {
+            background-color: #fefefe; margin: 10% auto; padding: 20px;
+            border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 8px;
         }
-        .btn-approve {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .btn-disapprove {
-            background-color: #F44336;
-            color: white;
-        }
-        .loading, .message {
-            text-align: center;
-            padding: 20px;
-            font-size: 18px;
-        }
+        .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        #addStudentForm input { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
@@ -201,195 +127,209 @@
         <div style="clear: both;"></div>
 
         <div class="loading" id="loading" style="display: none;">Searching...</div>
-        <div class="message" id="message" style="display: none;"></div>
+        
+        <div id="studentListContainer" class="student-list-container"></div>
+    </div>
 
-        <div class="student-info-section" id="studentInfoSection">
+    <template id="studentCardTemplate">
+        <div class="student-card-wrapper">
             <div class="student-card">
                 <div class="profile-pic">
-                    <img id="profileImage" src="https://via.placeholder.com/100" alt="Profile Picture">
+                    <img class="profile-image" src="" alt="Profile Picture">
                 </div>
-                <div id="studentEngName" class="eng-name"></div>
-                <div id="studentCountry" class="country"></div>
+                <div class="eng-name"></div>
+                <div class="country"></div>
 
                 <div class="student-details">
-                    <div class="detail-row"><span>ID:</span><span id="studentInfoId"></span></div>
-                    <div class="detail-row"><span>Thai Name:</span><span id="studentInfoThaiName"></span></div>
-                    <div class="detail-row"><span>Birth Date:</span><span id="studentInfoBirthDate"></span></div>
-                    <div class="detail-row"><span>Age:</span><span id="studentInfoAge"></span></div>
-                    <div class="detail-row"><span>Province:</span><span id="studentInfoProvince"></span></div>
-                    <div class="detail-row"><span>District:</span><span id="studentInfoDistrict"></span></div>
-                    <div class="detail-row"><span>GPA:</span><span id="studentInfoGpa"></span></div>
-                    <div class="detail-row"><span>English Grade:</span><span id="studentInfoEngGrade"></span></div>
-                    <div class="detail-row"><span>Study Status:</span><span id="studentInfoStudyStatus"></span></div>
+                    <div class="detail-row"><span>ID:</span><span class="info-id"></span></div>
+                    <div class="detail-row"><span>Thai Name:</span><span class="info-thai-name"></span></div>
+                    <div class="detail-row"><span>Birth Date:</span><span class="info-birth-date"></span></div>
+                    <div class="detail-row"><span>Age:</span><span class="info-age"></span></div>
+                    <div class="detail-row"><span>Province:</span><span class="info-province"></span></div>
+                    <div class="detail-row"><span>GPA:</span><span class="info-gpa"></span></div>
+                    <div class="detail-row"><span>Study Status:</span><span class="info-study-status"></span></div>
                 </div>
 
-                <textarea id="comments" placeholder="Add your comments here"></textarea>
+                <textarea class="comments-textarea" placeholder="Add your comments here"></textarea>
                 <div class="action-buttons">
-                    <button id="approveBtn" class="btn btn-action btn-approve" onclick="submitDecision('Approve')">Approve</button>
-                    <button id="disapproveBtn" class="btn btn-action btn-disapprove" onclick="submitDecision('Disapprove')">Disapprove</button>
+                    <button class="btn btn-action btn-approve">Approve</button>
+                    <button class="btn btn-action btn-disapprove">Disapprove</button>
                 </div>
             </div>
         </div>
+    </template>
 
+    <div id="addStudentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Add New Student</h2>
+            <form id="addStudentForm">
+                <input type="text" name="ID" placeholder="ID" required>
+                <input type="text" name="Thai Firstname" placeholder="Thai Firstname" required>
+                <input type="text" name="Thai Lastname" placeholder="Thai Lastname" required>
+                <input type="text" name="Date of Birth" placeholder="Date of Birth (DD/MM/YYYY)" required>
+                <input type="text" name="English Firstname" placeholder="English Firstname" required>
+                <input type="text" name="English Lastname" placeholder="English Lastname" required>
+                <input type="text" name="จังหวัดตามทะเบียนบ้าน" placeholder="Province" required>
+                <input type="text" name="อำเภอ/เขต ตามทะเบียนบ้าน" placeholder="District" required>
+                <input type="text" name="เกรดเฉลี่ยการศึกษาก่อนหน้า (GPA)" placeholder="GPA" required>
+                <input type="text" name="เกรดวิชาวิทยาศาสตร์เทคโนโลยีคอมพิวเตอร์" placeholder="Tech Grade" required>
+                <input type="text" name="สถานะการเรียน" placeholder="Study Status" required>
+                <input type="text" name="Image" placeholder="Image URL" required>
+                <input type="text" name="Country" placeholder="Country" required>
+                <button type="submit" class="btn btn-add">Save Student</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6EGKNzjbxrgm5aaLhW2QYq_BFJ8uBQSl3MqByO9Zj0gyfhCV6PfztafxQOI2ZOCvNOw/exec"; // <-- วาง Web App URL ที่คัดลอกมาที่นี่
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6EGKNzjbxrgm5aaLhW2QYq_BFJ8uBQSl3MqByO9Zj0gyfhCV6PfztafxQOI2ZOCvNOw/exec";
 
         const studentIdInput = document.getElementById('studentId');
         const thaiNameInput = document.getElementById('thaiName');
         const englishNameInput = document.getElementById('englishName');
-
         const loadingDiv = document.getElementById('loading');
-        const messageDiv = document.getElementById('message');
-        const studentInfoSection = document.getElementById('studentInfoSection');
+        const studentListContainer = document.getElementById('studentListContainer');
 
-        let currentStudentId = null;
-
-        // Add event listeners to search on pressing Enter
-        studentIdInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') searchStudent('studentID', e.target.value);
-        });
-        thaiNameInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') searchStudent('thaiName', e.target.value);
-        });
-        englishNameInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') searchStudent('englishName', e.target.value);
-        });
+        studentIdInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchStudent('studentID', e.target.value); });
+        thaiNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchStudent('thaiName', e.target.value); });
+        englishNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchStudent('englishName', e.target.value); });
 
         function searchStudent(key, value) {
             if (!value) return;
-
             loadingDiv.style.display = 'block';
-            messageDiv.style.display = 'none';
-            studentInfoSection.style.display = 'none';
+            studentListContainer.innerHTML = '';
             disableSearchInputs(true);
 
             fetch(`${SCRIPT_URL}?key=${key}&value=${encodeURIComponent(value)}`)
                 .then(response => response.json())
                 .then(res => {
-                    if (res.found) {
-                        populateStudentData(res.data);
-                        studentInfoSection.style.display = 'block';
-                    } else {
-                        messageDiv.textContent = 'Student not found.';
-                        messageDiv.style.display = 'block';
-                    }
+                    displayStudentList(res.data);
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    messageDiv.textContent = 'An error occurred while searching.';
-                    messageDiv.style.display = 'block';
+                    studentListContainer.innerHTML = '<div class="message">An error occurred while searching.</div>';
                 })
                 .finally(() => {
                     loadingDiv.style.display = 'none';
                     disableSearchInputs(false);
                 });
         }
-        
-        function populateStudentData(data) {
-    // ใช้ 'ID' ตามคอลัมน์ A ในชีตของคุณ
-    currentStudentId = data['ID']; 
-    
-    // 1. Image (Column L) - ใช้ 'Image'
-    document.getElementById('profileImage').src = data['Image'] || 'https://via.placeholder.com/100';
-    
-    // 2. English Name (Column E + F)
-    document.getElementById('studentEngName').textContent = `${data['English Firstname']} ${data['English Lastname']}`;
-    
-    // 3. Country (Column M) - ใช้ 'Country'
-    document.getElementById('studentCountry').textContent = data['Country'];
 
-    // 4. ID (Column A)
-    document.getElementById('studentInfoId').textContent = data['ID'];
+        function displayStudentList(students) {
+            const template = document.getElementById('studentCardTemplate');
+            studentListContainer.innerHTML = '';
 
-    // 5. Thai Name (Column B + C)
-    document.getElementById('studentInfoThaiName').textContent = `${data['Thai Firstname']} ${data['Thai Lastname']}`;
-
-    // 6. Birth Date (Column D) - ใช้ 'Date of Birth'
-    const birthDateStr = data['Date of Birth'];
-    // จัดการรูปแบบวันที่ DD/MM/YYYY
-    const dateParts = birthDateStr.split('/');
-    const birthDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-    document.getElementById('studentInfoBirthDate').textContent = birthDate.toLocaleDateString('en-GB');
-
-    // 7. Age Calculation
-    const birthYear = birthDate.getFullYear();
-    if (!isNaN(birthYear)) {
-        document.getElementById('studentInfoAge').textContent = `${2025 - birthYear} years`;
-    } else {
-         document.getElementById('studentInfoAge').textContent = 'N/A';
-    }
-
-    // 8. Province (Column G)
-    document.getElementById('studentInfoProvince').textContent = data['จังหวัดตามทะเบียนบ้าน'];
-
-    // 9. District (Column H)
-    document.getElementById('studentInfoDistrict').textContent = data['อำเภอ/เขต ตามทะเบียนบ้าน'];
-
-    // 10. GPA (Column I)
-    document.getElementById('studentInfoGpa').textContent = data['เกรดเฉลี่ยภาคการศึกษาก่อนหน้า (GPA)'];
-
-    // 11. English Grade (Column J)
-    document.getElementById('studentInfoEngGrade').textContent = data['เกรดวิชาภาษาอังกฤษเทอมก่อนหน้า'];
-
-    // 12. Study Status (Column K) - ใช้ 'สถานะการเรียน'
-    document.getElementById('studentInfoStudyStatus').textContent = data['อยู่ระหว่างการศึกษา'];
-    
-    // Reset comments and buttons
-    document.getElementById('comments').value = '';
-    document.getElementById('approveBtn').disabled = false;
-    document.getElementById('disapproveBtn').disabled = false;
-}
-
-        function submitDecision(status) {
-            const comment = document.getElementById('comments').value;
-            if (!currentStudentId) {
-                alert('No student selected.');
+            if (!students || students.length === 0) {
+                studentListContainer.innerHTML = '<div class="message">Student not found.</div>';
                 return;
             }
 
+            const studentsToShow = students.slice(0, 5);
+
+            studentsToShow.forEach(student => {
+                const card = template.content.cloneNode(true);
+                
+                card.querySelector('.profile-image').src = student['Image'] || 'https://via.placeholder.com/100';
+                card.querySelector('.eng-name').textContent = `${student['English Firstname']} ${student['English Lastname']}`;
+                card.querySelector('.country').textContent = student['Country'];
+                card.querySelector('.info-id').textContent = student['ID'];
+                card.querySelector('.info-thai-name').textContent = `${student['Thai Firstname']} ${student['Thai Lastname']}`;
+                
+                const birthDateStr = student['Date of Birth'];
+                if (birthDateStr) {
+                    const dateParts = birthDateStr.split('/');
+                    if (dateParts.length === 3) {
+                        const birthDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+                        card.querySelector('.info-birth-date').textContent = birthDate.toLocaleDateString('en-GB');
+                        const birthYear = birthDate.getFullYear();
+                        if (!isNaN(birthYear)) {
+                            card.querySelector('.info-age').textContent = `${2025 - birthYear} years`;
+                        } else {
+                            card.querySelector('.info-age').textContent = 'N/A';
+                        }
+                    } else {
+                         card.querySelector('.info-birth-date').textContent = 'Invalid Date';
+                         card.querySelector('.info-age').textContent = 'N/A';
+                    }
+                }
+                
+                card.querySelector('.info-province').textContent = student['จังหวัดตามทะเบียนบ้าน'];
+                card.querySelector('.info-gpa').textContent = student['เกรดเฉลี่ยการศึกษาก่อนหน้า (GPA)'];
+                card.querySelector('.info-study-status').textContent = student['สถานะการเรียน'];
+
+                const studentId = student['ID'];
+                const approveBtn = card.querySelector('.btn-approve');
+                const disapproveBtn = card.querySelector('.btn-disapprove');
+                const commentsTextarea = card.querySelector('.comments-textarea');
+
+                approveBtn.addEventListener('click', () => submitDecision(studentId, 'Approve', commentsTextarea.value, approveBtn, disapproveBtn));
+                disapproveBtn.addEventListener('click', () => submitDecision(studentId, 'Disapprove', commentsTextarea.value, approveBtn, disapproveBtn));
+
+                studentListContainer.appendChild(card);
+            });
+        }
+
+        function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
             const dataToPost = {
-                studentID: currentStudentId,
+                action: 'updateStatus',
+                studentID: studentID,
                 comment: comment,
                 status: status
             };
-
-            // Disable buttons to prevent multiple submissions
-            document.getElementById('approveBtn').disabled = true;
-            document.getElementById('disapproveBtn').disabled = true;
+            approveBtn.disabled = true;
+            disapproveBtn.disabled = true;
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Important for simple POST requests to Apps Script
-                cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                mode: 'no-cors',
                 body: JSON.stringify(dataToPost)
             })
-            .then(() => {
-                alert(`Student status set to '${status}' and comment submitted.`);
-                // Optionally clear the card after submission
-                // clearAll(); 
-            })
+            .then(() => alert(`Student ID ${studentID} status set to '${status}'.`))
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred. Could not submit data.');
-                 // Re-enable buttons on error
-                document.getElementById('approveBtn').disabled = false;
-                document.getElementById('disapproveBtn').disabled = false;
+                alert('An error occurred.');
+                approveBtn.disabled = false;
+                disapproveBtn.disabled = false;
             });
         }
+        
+        const modal = document.getElementById('addStudentModal');
+        const addStudentBtn = document.querySelector('.btn-add');
+        const closeBtn = document.querySelector('.close-button');
+        const addStudentForm = document.getElementById('addStudentForm');
+
+        addStudentBtn.onclick = () => { modal.style.display = "block"; }
+        closeBtn.onclick = () => { modal.style.display = "none"; }
+        window.onclick = (event) => { if (event.target == modal) { modal.style.display = "none"; } }
+
+        addStudentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(addStudentForm);
+            const newStudentData = Object.fromEntries(formData.entries());
+            newStudentData.action = 'addStudent';
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(newStudentData)
+            })
+            .then(() => {
+                alert('Student added successfully!');
+                addStudentForm.reset();
+                modal.style.display = "none";
+            })
+            .catch(err => {
+                console.error('Error adding student:', err);
+                alert('Failed to add student.');
+            });
+        });
 
         function clearAll() {
             studentIdInput.value = '';
             thaiNameInput.value = '';
             englishNameInput.value = '';
-            studentInfoSection.style.display = 'none';
-            messageDiv.style.display = 'none';
-            loadingDiv.style.display = 'none';
-            currentStudentId = null;
+            studentListContainer.innerHTML = '';
         }
 
         function disableSearchInputs(disabled) {
