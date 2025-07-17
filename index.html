@@ -288,55 +288,59 @@
         }
         
         function populateStudentData(data) {
-            currentStudentId = data['ID']; // Column A
-            
-            // 1. Image (Column L)
-            document.getElementById('profileImage').src = data['Image'] || 'https://via.placeholder.com/100';
-            
-            // 2. English Name (Column E + F)
-            document.getElementById('studentEngName').textContent = `${data['English Name (ชื่อจริง)']} ${data['English Lastname (นามสกุล)']}`;
-            
-            // 3. Country (Column M)
-            document.getElementById('studentCountry').textContent = data['Country'];
+    // ใช้ 'ID' ตามคอลัมน์ A ในชีตของคุณ
+    currentStudentId = data['ID']; 
+    
+    // 1. Image (Column L) - ใช้ 'Image'
+    document.getElementById('profileImage').src = data['Image'] || 'https://via.placeholder.com/100';
+    
+    // 2. English Name (Column E + F)
+    document.getElementById('studentEngName').textContent = `${data['English Firstname']} ${data['English Lastname']}`;
+    
+    // 3. Country (Column M) - ใช้ 'Country'
+    document.getElementById('studentCountry').textContent = data['Country'];
 
-            // 4. ID (Column A)
-            document.getElementById('studentInfoId').textContent = data['Student ID'];
+    // 4. ID (Column A)
+    document.getElementById('studentInfoId').textContent = data['ID'];
 
-            // 5. Thai Name (Column B + C)
-            document.getElementById('studentInfoThaiName').textContent = `${data['Thai Name (ชื่อจริง)']} ${data['Thai Lastname (นามสกุล)']}`;
+    // 5. Thai Name (Column B + C)
+    document.getElementById('studentInfoThaiName').textContent = `${data['Thai Firstname']} ${data['Thai Lastname']}`;
 
-            // 6. Birth Date (Column D)
-            const birthDate = data['Birth Date'];
-            document.getElementById('studentInfoBirthDate').textContent = new Date(birthDate).toLocaleDateString('en-GB');
+    // 6. Birth Date (Column D) - ใช้ 'Date of Birth'
+    const birthDateStr = data['Date of Birth'];
+    // จัดการรูปแบบวันที่ DD/MM/YYYY
+    const dateParts = birthDateStr.split('/');
+    const birthDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+    document.getElementById('studentInfoBirthDate').textContent = birthDate.toLocaleDateString('en-GB');
 
-            // 7. Age Calculation
-            const birthYear = new Date(birthDate).getFullYear();
-            if (!isNaN(birthYear)) {
-                document.getElementById('studentInfoAge').textContent = `${2025 - birthYear} years`;
-            } else {
-                 document.getElementById('studentInfoAge').textContent = 'N/A';
-            }
+    // 7. Age Calculation
+    const birthYear = birthDate.getFullYear();
+    if (!isNaN(birthYear)) {
+        document.getElementById('studentInfoAge').textContent = `${2025 - birthYear} years`;
+    } else {
+         document.getElementById('studentInfoAge').textContent = 'N/A';
+    }
 
-            // 8. Province (Column G)
-            document.getElementById('studentInfoProvince').textContent = data['Province'];
+    // 8. Province (Column G)
+    document.getElementById('studentInfoProvince').textContent = data['จังหวัดตามทะเบียนบ้าน'];
 
-            // 9. District (Column H)
-            document.getElementById('studentInfoDistrict').textContent = data['District'];
+    // 9. District (Column H)
+    document.getElementById('studentInfoDistrict').textContent = data['อำเภอ/เขต ตามทะเบียนบ้าน'];
 
-            // 10. GPA (Column I)
-            document.getElementById('studentInfoGpa').textContent = data['GPA'];
+    // 10. GPA (Column I)
+    document.getElementById('studentInfoGpa').textContent = data['เกรดเฉลี่ยการศึกษาก่อนหน้า (GPA)'];
 
-            // 11. English Grade (Column J)
-            document.getElementById('studentInfoEngGrade').textContent = data['English Grade'];
+    // 11. English Grade (Column J)
+    document.getElementById('studentInfoEngGrade').textContent = data['เกรดวิชาวิทยาศาสตร์เทคโนโลยีคอมพิวเตอร์'];
 
-            // 12. Study Status (Column K)
-            document.getElementById('studentInfoStudyStatus').textContent = data['Study Status'];
-            
-            // Reset comments and buttons
-            document.getElementById('comments').value = '';
-            document.getElementById('approveBtn').disabled = false;
-            document.getElementById('disapproveBtn').disabled = false;
-        }
+    // 12. Study Status (Column K) - ใช้ 'สถานะการเรียน'
+    document.getElementById('studentInfoStudyStatus').textContent = data['สถานะการเรียน'];
+    
+    // Reset comments and buttons
+    document.getElementById('comments').value = '';
+    document.getElementById('approveBtn').disabled = false;
+    document.getElementById('disapproveBtn').disabled = false;
+}
 
         function submitDecision(status) {
             const comment = document.getElementById('comments').value;
