@@ -4,41 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ODOS Student Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Country Flag Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/country-flag-icons@1.2.0/css/flag-icons.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: #FEFDF7;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-        }
-        .header {
-            background-color: #F8D442;
-            padding: 15px 30px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 { margin: 0; font-size: 24px; color: #333; }
-        .header p { margin: 5px 0 0; font-size: 16px; }
-        .card {
-            background-color: #FFFFFF;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #E0E0E0;
-            margin-bottom: 20px;
-        }
-        .search-students {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            align-items: flex-end;
-        }
+        body { font-family: 'Sarabun', sans-serif; background-color: #FEFDF7; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1200px; margin: auto; }
+        .header { background-color: #F8D442; padding: 15px 30px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .card { background-color: #FFFFFF; padding: 20px; border-radius: 8px; border: 1px solid #E0E0E0; margin-bottom: 20px; }
+        .search-students { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: flex-end; }
         .search-students .form-group { display: flex; flex-direction: column; }
         .search-students label { margin-bottom: 8px; font-weight: bold; }
         .search-students input { padding: 10px; border: 1px solid #CCC; border-radius: 4px; font-size: 16px; }
@@ -48,86 +24,60 @@
         .btn-clear { background-color: #E0E0E0; color: #333; }
         .btn-approve-all { background-color: #4CAF50; color: white; float: right; margin-bottom: 10px; }
         .loading, .message { text-align: center; padding: 20px; font-size: 18px; }
-
-        /* Styles for Multiple Student Cards */
-        .student-list-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
-        }
+        .student-list-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px; }
         .student-card-wrapper { flex-shrink: 0; }
-        .student-card {
-            width: 320px; padding: 20px; background-color: #FEFDF7;
-            border: 1px solid #E0E0E0; border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .student-card .profile-pic img {
-            width: 100px; height: 100px; border-radius: 50%;
-            object-fit: cover; border: 2px solid #F8D442; margin-bottom: 15px;
-        }
-        .student-card .eng-name { font-size: 18px; font-weight: bold; }
-        .student-card .country { font-size: 14px; color: #666; margin-bottom: 20px; }
-        .student-details { width: 100%; font-size: 14px; }
+        .student-card { width: 320px; padding: 20px; background-color: #FEFDF7; border: 1px solid #E0E0E0; border-radius: 8px; display: flex; flex-direction: column; align-items: center; }
+        .student-card.no-country { border: 2px solid red; }
+        .student-card .profile-pic img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #F8D442; margin-bottom: 15px; }
+        .student-card .country-info { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666; margin-bottom: 20px; height: 20px; }
+        .student-card .eng-name, .student-details { width: 100%; }
+        .student-card .eng-name { font-size: 18px; font-weight: bold; text-align:center; }
         .student-details .detail-row { display: grid; grid-template-columns: 100px 1fr; margin-bottom: 8px; }
         .student-details .detail-row span:first-child { font-weight: bold; color: #555; }
-        .student-card textarea {
-            width: calc(100% - 22px); height: 60px; margin-top: 20px; padding: 10px;
-            border-radius: 4px; border: 1px solid #CCC; resize: vertical;
-        }
+        .student-card textarea { width: calc(100% - 22px); height: 60px; margin-top: 20px; padding: 10px; border-radius: 4px; border: 1px solid #CCC; }
         .student-card .action-buttons { display: flex; justify-content: space-between; width: 100%; margin-top: 15px; }
         .btn-action { width: 48%; padding: 10px; }
         .btn-approve { background-color: #4CAF50; color: white; }
         .btn-disapprove { background-color: #F44336; color: white; }
+        .max-students-message { 
+            background-color: #FFF3CD; 
+            color: #856404; 
+            padding: 10px; 
+            border-radius: 4px; 
+            margin: 10px 0; 
+            text-align: center;
+            display: none;
+        }
+        .flag-icon { width: 20px; height: 15px; border: 1px solid #DDD; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <div class="header">
-            <h1>ODOS Student Management System</h1>
-            <p>Department of Digital Economy Promotion (depa)</p>
-        </div>
-
+        <div class="header"><h1>ODOS Student Management System</h1><p>Department of Digital Economy Promotion (depa)</p></div>
         <div class="card">
             <div class="search-students">
-                <div class="form-group">
-                    <label for="studentId">Student ID:</label>
-                    <input type="text" id="studentId" placeholder="Enter Student ID">
-                </div>
-                <div class="form-group">
-                    <label for="thaiName">Thai Name:</label>
-                    <input type="text" id="thaiName" placeholder="Enter Thai Name">
-                </div>
-                <div class="form-group">
-                    <label for="englishName">English Name:</label>
-                    <input type="text" id="englishName" placeholder="Enter English Name">
-                </div>
-                <div class="button-group">
-                    <button class="btn btn-add">Search ID</button> 
-                    <button class="btn btn-clear" onclick="clearAll()">Clear All</button>
-                </div>
+                <div class="form-group"><label for="studentId">Student ID:</label><input type="text" id="studentId" placeholder="Enter Student ID"></div>
+                <div class="form-group"><label for="thaiName">Thai Name:</label><input type="text" id="thaiName" placeholder="Enter Thai Name"></div>
+                <div class="form-group"><label for="englishName">English Name:</label><input type="text" id="englishName" placeholder="Enter English Name"></div>
+                <div class="button-group"><button class="btn btn-add">Search ID</button><button class="btn btn-clear" onclick="clearAll()">Clear All</button></div>
             </div>
         </div>
-        
+        <div id="maxStudentsMessage" class="max-students-message">Maximum of 5 students displayed. Clear some to add more.</div>
         <button class="btn btn-approve-all">Approve All</button>
         <div style="clear: both;"></div>
-
         <div class="loading" id="loading" style="display: none;">Searching...</div>
-        
         <div id="studentListContainer" class="student-list-container"></div>
     </div>
 
     <template id="studentCardTemplate">
-        <div class="student-card-wrapper">
+        <div class="student-card-wrapper" data-id="">
             <div class="student-card">
-                <div class="profile-pic">
-                    <img class="profile-image" src="" alt="Profile Picture">
-                </div>
+                <div class="profile-pic"><img class="profile-image" src="" alt="Profile Picture"></div>
                 <div class="eng-name"></div>
-                <div class="country"></div>
-
+                <div class="country-info">
+                    <span class="fi fi-xx flag-icon"></span>
+                    <span class="country-name"></span>
+                </div>
                 <div class="student-details">
                     <div class="detail-row"><span>ID:</span><span class="info-id"></span></div>
                     <div class="detail-row"><span>Thai Name:</span><span class="info-thai-name"></span></div>
@@ -135,10 +85,9 @@
                     <div class="detail-row"><span>Age:</span><span class="info-age"></span></div>
                     <div class="detail-row"><span>Province:</span><span class="info-province"></span></div>
                     <div class="detail-row"><span>GPA:</span><span class="info-gpa"></span></div>
-                    <div class="detail-row"><span>EnglishGPA:</span><span class="info-EnglishGPA"></span></div>
+                    <div class="detail-row"><span>Eng/Tech Grade:</span><span class="info-eng-tech-gpa"></span></div>
                     <div class="detail-row"><span>Study Status:</span><span class="info-study-status"></span></div>
                 </div>
-
                 <textarea class="comments-textarea" placeholder="Add your comments here"></textarea>
                 <div class="action-buttons">
                     <button class="btn btn-action btn-approve">Approve</button>
@@ -148,135 +97,251 @@
         </div>
     </template>
 
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSVk8-H-O29VCgAR2KpH_uuDzIfrt9DN2_RxwWjIrP1XknzJGVxtvjLwi9RDKSnZqB8g/exec"; // <-- ใส่ URL ของคุณ
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDSt_UmV2ZVlBWzDzr7ofcsqtTX56pDQ_4P6X9jmsnBPIT1G3Tr0lhOIWw99UjqNsvTw/exec"; 
+        const MAX_STUDENTS = 5;
 
         const studentIdInput = document.getElementById('studentId');
         const thaiNameInput = document.getElementById('thaiName');
         const englishNameInput = document.getElementById('englishName');
         const loadingDiv = document.getElementById('loading');
         const studentListContainer = document.getElementById('studentListContainer');
-        const searchIdBtn = document.querySelector('.btn-add'); // เปลี่ยนชื่อตัวแปรให้สื่อความหมาย
+        const searchIdBtn = document.querySelector('.btn-add');
+        const approveAllBtn = document.querySelector('.btn-approve-all');
+        const maxStudentsMessage = document.getElementById('maxStudentsMessage');
 
-        // ทำให้ปุ่ม Search ID ทำงาน
+        // Store currently displayed student IDs to prevent duplicates
+        const displayedStudentIds = new Set();
+
+        // Country code mapping with more countries added
+        const countryCodeMap = { 
+            'USA': 'us', 
+            'Japan': 'jp', 
+            'China': 'cn', 
+            'Singapore': 'sg', 
+            'Finland': 'fi', 
+            'Australia': 'au', 
+            'Korea': 'kr',
+            'Thailand': 'th',
+            'United States': 'us',
+            'United Kingdom': 'gb',
+            'Canada': 'ca',
+            'Germany': 'de',
+            'France': 'fr',
+            'Italy': 'it',
+            'Spain': 'es',
+            'India': 'in',
+            'Brazil': 'br',
+            'Russia': 'ru'
+        };
+
         searchIdBtn.addEventListener('click', () => {
-            const studentIdValue = studentIdInput.value;
-            if (studentIdValue) {
-                searchStudent('studentID', studentIdValue);
-            } else {
-                alert('Please enter a Student ID to search.');
+            if (studentIdInput.value) {
+                searchStudent('studentID', studentIdInput.value);
+                studentIdInput.value = ''; // Clear input after search
             }
         });
-
-        // ทำให้การกด Enter ทำงาน
-        studentIdInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchStudent('studentID', e.target.value); });
-        thaiNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchStudent('thaiName', e.target.value); });
-        englishNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchStudent('englishName', e.target.value); });
+        
+        studentIdInput.addEventListener('keydown', (e) => { 
+            if (e.key === 'Enter' && studentIdInput.value) {
+                searchStudent('studentID', studentIdInput.value);
+                studentIdInput.value = ''; // Clear input after search
+            }
+        });
+        
+        thaiNameInput.addEventListener('keydown', (e) => { 
+            if (e.key === 'Enter' && thaiNameInput.value) searchStudent('thaiName', thaiNameInput.value); 
+        });
+        
+        englishNameInput.addEventListener('keydown', (e) => { 
+            if (e.key === 'Enter' && englishNameInput.value) searchStudent('englishName', englishNameInput.value); 
+        });
+        
+        approveAllBtn.addEventListener('click', approveAllVisibleStudents);
 
         function searchStudent(key, value) {
             if (!value) return;
+            
+            // Check if we've reached max students
+            if (displayedStudentIds.size >= MAX_STUDENTS) {
+                maxStudentsMessage.style.display = 'block';
+                return;
+            }
+            
             loadingDiv.style.display = 'block';
-            studentListContainer.innerHTML = '';
             disableSearchInputs(true);
 
             fetch(`${SCRIPT_URL}?key=${key}&value=${encodeURIComponent(value)}`)
                 .then(response => response.json())
                 .then(res => {
-                    displayStudentList(res.data);
+                    if (res.data && res.data.length > 0) {
+                        addStudentsToDisplay(res.data);
+                    } else {
+                        alert('Student not found');
+                    }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    studentListContainer.innerHTML = '<div class="message">An error occurred while searching.</div>';
-                })
+                .catch(error => console.error('Error:', error))
                 .finally(() => {
                     loadingDiv.style.display = 'none';
                     disableSearchInputs(false);
                 });
         }
-
-        function displayStudentList(students) {
+        
+        function addStudentsToDisplay(students) {
             const template = document.getElementById('studentCardTemplate');
-            studentListContainer.innerHTML = '';
-
-            if (!students || students.length === 0) {
-                studentListContainer.innerHTML = '<div class="message">Student not found.</div>';
-                return;
-            }
-
-            const studentsToShow = students.slice(0, 5);
-
-            studentsToShow.forEach(student => {
-                const card = template.content.cloneNode(true);
+            
+            students.forEach(student => {
+                // Skip if we've reached max students or this student is already displayed
+                if (displayedStudentIds.size >= MAX_STUDENTS || displayedStudentIds.has(student['ID'])) {
+                    if (displayedStudentIds.size >= MAX_STUDENTS) {
+                        maxStudentsMessage.style.display = 'block';
+                    }
+                    return;
+                }
                 
-                card.querySelector('.profile-image').src = student['Image'] || 'https://via.placeholder.com/100';
-                card.querySelector('.eng-name').textContent = `${student['English Firstname']} ${student['English Lastname']}`;
-                card.querySelector('.country').textContent = student['Country'];
-                card.querySelector('.info-id').textContent = student['ID'];
-                card.querySelector('.info-thai-name').textContent = `${student['Thai Firstname']} ${student['Thai Lastname']}`;
+                // Add to displayed students set
+                displayedStudentIds.add(student['ID']);
+                
+                const cardWrapper = template.content.cloneNode(true);
+                const cardElement = cardWrapper.querySelector('.student-card');
+                cardWrapper.querySelector('.student-card-wrapper').dataset.id = student['ID'];
+                
+                cardWrapper.querySelector('.profile-image').src = student['Image'] || 'https://via.placeholder.com/100';
+                cardWrapper.querySelector('.eng-name').textContent = `${student['English Firstname']} ${student['English Lastname']}`;
+                
+                const countryName = student['Country'];
+                if (countryName && countryName.trim() !== '' && countryName !== 'N/A') {
+                    const countryCode = (countryCodeMap[countryName] || 'xx').toLowerCase();
+                    const flagElement = cardWrapper.querySelector('.flag-icon');
+                    flagElement.className = `fi fi-${countryCode} flag-icon`;
+                    cardWrapper.querySelector('.country-name').textContent = countryName;
+                } else {
+                    cardWrapper.querySelector('.country-info').innerHTML = '<span>No Country Data</span>';
+                    cardElement.classList.add('no-country');
+                }
+                
+                cardWrapper.querySelector('.info-id').textContent = student['ID'];
+                cardWrapper.querySelector('.info-thai-name').textContent = `${student['Thai Firstname']} ${student['Thai Lastname']}`;
                 
                 const birthDateStr = student['Date of Birth'];
                 if (birthDateStr) {
                     const dateParts = birthDateStr.split('/');
                     if (dateParts.length === 3) {
                         const birthDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-                        card.querySelector('.info-birth-date').textContent = birthDate.toLocaleDateString('en-GB');
-                        const birthYear = birthDate.getFullYear();
-                        if (!isNaN(birthYear)) {
-                            card.querySelector('.info-age').textContent = `${2025 - birthYear} years`;
+                        if(!isNaN(birthDate)) {
+                           cardWrapper.querySelector('.info-birth-date').textContent = birthDate.toLocaleDateString('en-GB');
+                           cardWrapper.querySelector('.info-age').textContent = `${new Date().getFullYear() - birthDate.getFullYear()} years`;
                         }
-                    } else {
-                         card.querySelector('.info-birth-date').textContent = 'Invalid Date';
-                         card.querySelector('.info-age').textContent = 'N/A';
                     }
                 }
                 
-                card.querySelector('.info-province').textContent = student['จังหวัดตามทะเบียนบ้าน'];
-                card.querySelector('.info-gpa').textContent = student['เกรดเฉลี่ยภาคการศึกษาก่อนหน้า (GPA)'];
-                card.querySelector('.info-EnglishGPA').textContent = student['เกรดวิชาภาษาอังกฤษเทอมก่อนหน้า'];
-                card.querySelector('.info-study-status').textContent = student['อยู่ระหว่างการศึกษา'];
+                cardWrapper.querySelector('.info-province').textContent = student['จังหวัดตามทะเบียนบ้าน'];
+                cardWrapper.querySelector('.info-gpa').textContent = student['เกรดเฉลี่ยการศึกษาก่อนหน้า (GPA)'];
+                cardWrapper.querySelector('.info-eng-tech-gpa').textContent = student['เกรดวิชาภาษาอังกฤษเทอมก่อนหน้า'] || student['เกรดวิชาวิทยาศาสตร์เทคโนโลยีคอมพิวเตอร์'];
+                cardWrapper.querySelector('.info-study-status').textContent = student['สถานะการเรียน'] || student['อยู่ระหว่างการศึกษา'];
+                
+                const approveBtn = cardWrapper.querySelector('.btn-approve');
+                const disapproveBtn = cardWrapper.querySelector('.btn-disapprove');
+                approveBtn.addEventListener('click', () => submitDecision(student['ID'], 'Approve', cardWrapper.querySelector('.comments-textarea').value, approveBtn, disapproveBtn));
+                disapproveBtn.addEventListener('click', () => submitDecision(student['ID'], 'Disapprove', cardWrapper.querySelector('.comments-textarea').value, approveBtn, disapproveBtn));
 
-                const studentId = student['ID'];
-                const approveBtn = card.querySelector('.btn-approve');
-                const disapproveBtn = card.querySelector('.btn-disapprove');
-                const commentsTextarea = card.querySelector('.comments-textarea');
-
-                approveBtn.addEventListener('click', () => submitDecision(studentId, 'Approve', commentsTextarea.value, approveBtn, disapproveBtn));
-                disapproveBtn.addEventListener('click', () => submitDecision(studentId, 'Disapprove', commentsTextarea.value, approveBtn, disapproveBtn));
-
-                studentListContainer.appendChild(card);
+                studentListContainer.appendChild(cardWrapper);
             });
+            
+            // Hide max students message if we're below limit
+            if (displayedStudentIds.size < MAX_STUDENTS) {
+                maxStudentsMessage.style.display = 'none';
+            }
         }
 
-        function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
-            const dataToPost = {
-                studentID: studentID,
-                comment: comment,
-                status: status
-            };
-            approveBtn.disabled = true;
-            disapproveBtn.disabled = true;
+       // นำฟังก์ชันนี้ไปทับ submitDecision ของเก่า
+function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
+    approveBtn.disabled = true;
+    disapproveBtn.disabled = true;
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        // --- การแก้ไขที่ 1 ---
+        mode: 'cors', // เปลี่ยนเป็น 'cors' เพื่อรอรับการตอบกลับ
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // --- สิ้นสุดการแก้ไขที่ 1 ---
+        body: JSON.stringify({ action: 'updateSingleStatus', studentID, status, comment })
+    })
+    // --- การแก้ไขที่ 2: เพิ่มการตรวจสอบ response ---
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Student ID ${studentID} status set to '${status}'.`);
+            const card = approveBtn.closest('.student-card');
+            card.style.opacity = '0.5';
+        } else {
+            // ถ้าไม่สำเร็จ ให้แสดงข้อความ error และเปิดปุ่มคืน
+            throw new Error(data.message || 'Failed to update status.');
+        }
+    })
+    // --- สิ้นสุดการแก้ไขที่ 2 ---
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+        approveBtn.disabled = false;
+        disapproveBtn.disabled = false;
+    });
+}
 
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(dataToPost)
-            })
-            .then(() => alert(`Student ID ${studentID} status set to '${status}'.`))
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred.');
-                approveBtn.disabled = false;
-                disapproveBtn.disabled = false;
+// นำฟังก์ชันนี้ไปทับ approveAllVisibleStudents ของเก่า
+function approveAllVisibleStudents() {
+    const visibleCards = document.querySelectorAll('.student-card-wrapper');
+    if (visibleCards.length === 0) { alert("No students to approve."); return; }
+    const studentIDs = Array.from(visibleCards).map(card => card.dataset.id);
+    
+    approveAllBtn.disabled = true;
+    approveAllBtn.textContent = 'Approving...';
+
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        // --- การแก้ไขที่ 1 ---
+        mode: 'cors', // เปลี่ยนเป็น 'cors'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // --- สิ้นสุดการแก้ไขที่ 1 ---
+        body: JSON.stringify({ action: 'approveAll', studentIDs })
+    })
+    // --- การแก้ไขที่ 2: เพิ่มการตรวจสอบ response ---
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+           alert('All visible students have been approved.');
+            visibleCards.forEach(card => {
+                card.querySelector('.btn-approve').style.backgroundColor = 'grey';
+                card.querySelector('.btn-approve').disabled = true;
+                card.querySelector('.btn-disapprove').style.display = 'none';
             });
+        } else {
+           throw new Error(data.message || 'Failed to approve all.');
         }
-
-        function clearAll() {
-            studentIdInput.value = '';
-            thaiNameInput.value = '';
-            englishNameInput.value = '';
-            studentListContainer.innerHTML = '';
+    })
+    // --- สิ้นสุดการแก้ไขที่ 2 ---
+    .catch(err => {
+        console.error('Error:', err);
+        alert('An error occurred during bulk approval.');
+    })
+    .finally(() => {
+        approveAllBtn.disabled = false;
+        approveAllBtn.textContent = 'Approve All';
+    });
+}
+        
+        function clearAll() { 
+            studentListContainer.innerHTML = ''; 
+            displayedStudentIds.clear();
+            maxStudentsMessage.style.display = 'none';
         }
-
+        
         function disableSearchInputs(disabled) {
             studentIdInput.disabled = disabled;
             thaiNameInput.disabled = disabled;
