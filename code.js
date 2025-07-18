@@ -1,7 +1,7 @@
 const SHEET_ID = "18pVNW1_3wYdUaOJSJkwPA0MF2h4jaUVJFNQvfHfICoY";
 const SHEET_NAME = "Sheet1";
 
-// ฟังก์ชันนี้จำเป็นสำหรับแก้ปัญหา CORS ที่อาจเกิดขึ้น
+// ฟังก์ชันนี้สำคัญที่สุดสำหรับแก้ปัญหา CORS
 function doOptions(e) {
   return ContentService.createTextOutput()
     .setHeader('Access-Control-Allow-Origin', '*')
@@ -16,13 +16,11 @@ function doGet(e) {
   const results = [];
   const searchKey = e.parameter.key;
   const searchValue = e.parameter.value ? e.parameter.value.toLowerCase() : null;
-
   if (searchValue) {
     let searchIndex = -1;
     if (searchKey === 'studentID') searchIndex = 0;
     if (searchKey === 'thaiName') searchIndex = 1;
     if (searchKey === 'englishName') searchIndex = 4;
-
     if (searchIndex !== -1) {
       for (let i = 0; i < data.length; i++) {
         if (data[i][searchIndex] && data[i][searchIndex].toString().toLowerCase().includes(searchValue)) {
@@ -42,12 +40,9 @@ function doPost(e) {
     const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     const postData = JSON.parse(e.postData.contents);
     const action = postData.action;
-
     const allDataWithHeaders = sheet.getDataRange().getValues();
-    const headers = allDataWithHeaders.shift(); // นำ Header ออกมา
-    const allData = allDataWithHeaders; // ข้อมูลที่เหลือ
-
-    // **จุดสำคัญ** ค้นหาตำแหน่งของคอลัมน์จากชื่อ Header ที่ถูกต้อง
+    const headers = allDataWithHeaders.shift();
+    const allData = allDataWithHeaders;
     const commentColIndex = headers.indexOf("Comments");
     const statusColIndex = headers.indexOf("Status");
 
@@ -55,35 +50,26 @@ function doPost(e) {
       const studentID = postData.studentID;
       for (let i = 0; i < allData.length; i++) {
         if (allData[i][0] && allData[i][0].toString() === studentID) {
-          const rowIndex = i + 2; // +1 เพราะ array เริ่มที่ 0, +1 เพราะเราตัด header ออกไป
-          // ตรวจสอบว่าหาคอลัมน์เจอหรือไม่ก่อนบันทึก
-          if (commentColIndex > -1) {
-            sheet.getRange(rowIndex, commentColIndex + 1).setValue(postData.comment);
-          }
-          if (statusColIndex > -1) {
-            sheet.getRange(rowIndex, statusColIndex + 1).setValue(postData.status);
-          }
+          const rowIndex = i + 2;
+          if (commentColIndex > -1) sheet.getRange(rowIndex, commentColIndex + 1).setValue(postData.comment);
+          if (statusColIndex > -1) sheet.getRange(rowIndex, statusColIndex + 1).setValue(postData.status);
           break;
         }
       }
       return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Student updated." })).setMimeType(ContentService.MimeType.JSON);
-    
     } else if (action === 'approveAll') {
       const studentIDs = postData.studentIDs;
       studentIDs.forEach(studentID => {
         for (let i = 0; i < allData.length; i++) {
           if (allData[i][0] && allData[i][0].toString() === studentID) {
             const rowIndex = i + 2;
-            if (statusColIndex > -1) {
-              sheet.getRange(rowIndex, statusColIndex + 1).setValue("Approve");
-            }
+            if (statusColIndex > -1) sheet.getRange(rowIndex, statusColIndex + 1).setValue("Approve");
             break; 
           }
         }
       });
       return ContentService.createTextOutput(JSON.stringify({ success: true, message: "All approved." })).setMimeType(ContentService.MimeType.JSON);
     }
-
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ success: false, message: error.toString() })).setMimeType(ContentService.MimeType.JSON);
   }
