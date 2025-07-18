@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ODOS Student Management System</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Country Flag Icons -->
     <link href="https://cdn.jsdelivr.net/npm/country-flag-icons@1.2.0/css/flag-icons.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
@@ -39,15 +37,7 @@
         .btn-action { width: 48%; padding: 10px; }
         .btn-approve { background-color: #4CAF50; color: white; }
         .btn-disapprove { background-color: #F44336; color: white; }
-        .max-students-message { 
-            background-color: #FFF3CD; 
-            color: #856404; 
-            padding: 10px; 
-            border-radius: 4px; 
-            margin: 10px 0; 
-            text-align: center;
-            display: none;
-        }
+        .max-students-message { background-color: #FFF3CD; color: #856404; padding: 10px; border-radius: 4px; margin: 10px 0; text-align: center; display: none; }
         .flag-icon { width: 20px; height: 15px; border: 1px solid #DDD; }
     </style>
 </head>
@@ -97,11 +87,10 @@
         </div>
     </template>
 
-    <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDSt_UmV2ZVlBWzDzr7ofcsqtTX56pDQ_4P6X9jmsnBPIT1G3Tr0lhOIWw99UjqNsvTw/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzCYK3irQftELU8JmSLLH99a3JcLw6A5Ja4RkzRwJLtrHrMfjoN59udc92FjaJZA-PjSA/exec"; 
         const MAX_STUDENTS = 5;
 
         const studentIdInput = document.getElementById('studentId');
@@ -112,65 +101,31 @@
         const searchIdBtn = document.querySelector('.btn-add');
         const approveAllBtn = document.querySelector('.btn-approve-all');
         const maxStudentsMessage = document.getElementById('maxStudentsMessage');
-
-        // Store currently displayed student IDs to prevent duplicates
         const displayedStudentIds = new Set();
 
-        // Country code mapping with more countries added
-        const countryCodeMap = { 
-            'USA': 'us', 
-            'Japan': 'jp', 
-            'China': 'cn', 
-            'Singapore': 'sg', 
-            'Finland': 'fi', 
-            'Australia': 'au', 
-            'Korea': 'kr',
-            'Thailand': 'th',
-            'United States': 'us',
-            'United Kingdom': 'gb',
-            'Canada': 'ca',
-            'Germany': 'de',
-            'France': 'fr',
-            'Italy': 'it',
-            'Spain': 'es',
-            'India': 'in',
-            'Brazil': 'br',
-            'Russia': 'ru'
-        };
+        const countryCodeMap = { 'USA': 'us', 'Japan': 'jp', 'China': 'cn', 'Singapore': 'sg', 'Finland': 'fi', 'Australia': 'au', 'Korea': 'kr', 'Thailand': 'th', 'United States': 'us', 'United Kingdom': 'gb', 'Canada': 'ca', 'Germany': 'de', 'France': 'fr', 'Italy': 'it', 'Spain': 'es', 'India': 'in', 'Brazil': 'br', 'Russia': 'ru' };
 
         searchIdBtn.addEventListener('click', () => {
             if (studentIdInput.value) {
                 searchStudent('studentID', studentIdInput.value);
-                studentIdInput.value = ''; // Clear input after search
+                studentIdInput.value = '';
             }
         });
         
         studentIdInput.addEventListener('keydown', (e) => { 
             if (e.key === 'Enter' && studentIdInput.value) {
                 searchStudent('studentID', studentIdInput.value);
-                studentIdInput.value = ''; // Clear input after search
+                studentIdInput.value = '';
             }
         });
         
-        thaiNameInput.addEventListener('keydown', (e) => { 
-            if (e.key === 'Enter' && thaiNameInput.value) searchStudent('thaiName', thaiNameInput.value); 
-        });
-        
-        englishNameInput.addEventListener('keydown', (e) => { 
-            if (e.key === 'Enter' && englishNameInput.value) searchStudent('englishName', englishNameInput.value); 
-        });
-        
+        thaiNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && thaiNameInput.value) searchStudent('thaiName', thaiNameInput.value); });
+        englishNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && englishNameInput.value) searchStudent('englishName', englishNameInput.value); });
         approveAllBtn.addEventListener('click', approveAllVisibleStudents);
 
         function searchStudent(key, value) {
             if (!value) return;
-            
-            // Check if we've reached max students
-            if (displayedStudentIds.size >= MAX_STUDENTS) {
-                maxStudentsMessage.style.display = 'block';
-                return;
-            }
-            
+            if (displayedStudentIds.size >= MAX_STUDENTS) { maxStudentsMessage.style.display = 'block'; return; }
             loadingDiv.style.display = 'block';
             disableSearchInputs(true);
 
@@ -194,21 +149,16 @@
             const template = document.getElementById('studentCardTemplate');
             
             students.forEach(student => {
-                // Skip if we've reached max students or this student is already displayed
                 if (displayedStudentIds.size >= MAX_STUDENTS || displayedStudentIds.has(student['ID'])) {
-                    if (displayedStudentIds.size >= MAX_STUDENTS) {
-                        maxStudentsMessage.style.display = 'block';
-                    }
+                    if (displayedStudentIds.size >= MAX_STUDENTS) { maxStudentsMessage.style.display = 'block'; }
                     return;
                 }
                 
-                // Add to displayed students set
                 displayedStudentIds.add(student['ID']);
                 
                 const cardWrapper = template.content.cloneNode(true);
                 const cardElement = cardWrapper.querySelector('.student-card');
                 cardWrapper.querySelector('.student-card-wrapper').dataset.id = student['ID'];
-                
                 cardWrapper.querySelector('.profile-image').src = student['Image'] || 'https://via.placeholder.com/100';
                 cardWrapper.querySelector('.eng-name').textContent = `${student['English Firstname']} ${student['English Lastname']}`;
                 
@@ -245,96 +195,82 @@
                 
                 const approveBtn = cardWrapper.querySelector('.btn-approve');
                 const disapproveBtn = cardWrapper.querySelector('.btn-disapprove');
-                approveBtn.addEventListener('click', () => submitDecision(student['ID'], 'Approve', cardWrapper.querySelector('.comments-textarea').value, approveBtn, disapproveBtn));
-                disapproveBtn.addEventListener('click', () => submitDecision(student['ID'], 'Disapprove', cardWrapper.querySelector('.comments-textarea').value, approveBtn, disapproveBtn));
+                const commentsTextarea = cardWrapper.querySelector('.comments-textarea');
+
+                approveBtn.addEventListener('click', () => submitDecision(student['ID'], 'Approve', commentsTextarea.value, approveBtn, disapproveBtn));
+                disapproveBtn.addEventListener('click', () => submitDecision(student['ID'], 'Disapprove', commentsTextarea.value, approveBtn, disapproveBtn));
 
                 studentListContainer.appendChild(cardWrapper);
             });
             
-            // Hide max students message if we're below limit
-            if (displayedStudentIds.size < MAX_STUDENTS) {
-                maxStudentsMessage.style.display = 'none';
-            }
+            if (displayedStudentIds.size < MAX_STUDENTS) { maxStudentsMessage.style.display = 'none'; }
         }
 
-       // นำฟังก์ชันนี้ไปทับ submitDecision ของเก่า
-function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
-    approveBtn.disabled = true;
-    disapproveBtn.disabled = true;
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        // --- การแก้ไขที่ 1 ---
-        mode: 'cors', // เปลี่ยนเป็น 'cors' เพื่อรอรับการตอบกลับ
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        // --- สิ้นสุดการแก้ไขที่ 1 ---
-        body: JSON.stringify({ action: 'updateSingleStatus', studentID, status, comment })
-    })
-    // --- การแก้ไขที่ 2: เพิ่มการตรวจสอบ response ---
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert(`Student ID ${studentID} status set to '${status}'.`);
-            const card = approveBtn.closest('.student-card');
-            card.style.opacity = '0.5';
-        } else {
-            // ถ้าไม่สำเร็จ ให้แสดงข้อความ error และเปิดปุ่มคืน
-            throw new Error(data.message || 'Failed to update status.');
-        }
-    })
-    // --- สิ้นสุดการแก้ไขที่ 2 ---
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-        approveBtn.disabled = false;
-        disapproveBtn.disabled = false;
-    });
-}
-
-// นำฟังก์ชันนี้ไปทับ approveAllVisibleStudents ของเก่า
-function approveAllVisibleStudents() {
-    const visibleCards = document.querySelectorAll('.student-card-wrapper');
-    if (visibleCards.length === 0) { alert("No students to approve."); return; }
-    const studentIDs = Array.from(visibleCards).map(card => card.dataset.id);
-    
-    approveAllBtn.disabled = true;
-    approveAllBtn.textContent = 'Approving...';
-
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        // --- การแก้ไขที่ 1 ---
-        mode: 'cors', // เปลี่ยนเป็น 'cors'
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        // --- สิ้นสุดการแก้ไขที่ 1 ---
-        body: JSON.stringify({ action: 'approveAll', studentIDs })
-    })
-    // --- การแก้ไขที่ 2: เพิ่มการตรวจสอบ response ---
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-           alert('All visible students have been approved.');
-            visibleCards.forEach(card => {
-                card.querySelector('.btn-approve').style.backgroundColor = 'grey';
-                card.querySelector('.btn-approve').disabled = true;
-                card.querySelector('.btn-disapprove').style.display = 'none';
+        // --- ADD THIS FUNCTION BACK ---
+        function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
+            approveBtn.disabled = true;
+            disapproveBtn.disabled = true;
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'updateSingleStatus', studentID, status, comment })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Student ID ${studentID} status set to '${status}'.`);
+                    const card = approveBtn.closest('.student-card');
+                    card.style.opacity = '0.5';
+                } else {
+                    throw new Error(data.message || 'Failed to update.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during update. Please try again.');
+                approveBtn.disabled = false;
+                disapproveBtn.disabled = false;
             });
-        } else {
-           throw new Error(data.message || 'Failed to approve all.');
         }
-    })
-    // --- สิ้นสุดการแก้ไขที่ 2 ---
-    .catch(err => {
-        console.error('Error:', err);
-        alert('An error occurred during bulk approval.');
-    })
-    .finally(() => {
-        approveAllBtn.disabled = false;
-        approveAllBtn.textContent = 'Approve All';
-    });
-}
+        // --- END OF ADDED FUNCTION ---
+
+        function approveAllVisibleStudents() {
+            const visibleCards = document.querySelectorAll('.student-card-wrapper');
+            if (visibleCards.length === 0) { alert("No students to approve."); return; }
+            const studentIDs = Array.from(visibleCards).map(card => card.dataset.id);
+            
+            approveAllBtn.disabled = true;
+            approveAllBtn.textContent = 'Approving...';
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'approveAll', studentIDs })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                   alert('All visible students have been approved.');
+                    visibleCards.forEach(card => {
+                        card.querySelector('.btn-approve').style.backgroundColor = 'grey';
+                        card.querySelector('.btn-approve').disabled = true;
+                        card.querySelector('.btn-disapprove').style.display = 'none';
+                    });
+                } else {
+                   throw new Error(data.message || 'Failed to approve all.');
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('An error occurred during bulk approval.');
+            })
+            .finally(() => {
+                approveAllBtn.disabled = false;
+                approveAllBtn.textContent = 'Approve All';
+            });
+        }
         
         function clearAll() { 
             studentListContainer.innerHTML = ''; 
