@@ -1,6 +1,17 @@
 const SHEET_ID = "18pVNW1_3wYdUaOJSJkwPA0MF2h4jaUVJFNQvfHfICoY";
 const SHEET_NAME = "Sheet1";
 
+// ===============================================================
+// NEW FUNCTION TO HANDLE CORS PREFLIGHT REQUESTS
+// ===============================================================
+function doOptions(e) {
+  return ContentService.createTextOutput()
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+// ===============================================================
+
 function doGet(e) {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
   const data = sheet.getDataRange().getValues();
@@ -19,7 +30,7 @@ function doGet(e) {
           let resultData = {};
           headers.forEach((header, index) => { resultData[header] = data[i][index]; });
           results.push(resultData);
-          if (searchKey === 'studentID') break; // ถ้าค้นหาด้วย ID ให้เจอแค่คนเดียว
+          if (searchKey === 'studentID') break;
         }
       }
     }
@@ -34,7 +45,7 @@ function doPost(e) {
     const action = postData.action;
 
     const allData = sheet.getDataRange().getValues();
-    const headers = allData.shift();
+    const headers = allData.shift(); 
     const commentColIndex = headers.indexOf("Comments");
     const statusColIndex = headers.indexOf("Status");
 
@@ -48,7 +59,8 @@ function doPost(e) {
           break;
         }
       }
-      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Student updated." }));
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Student updated." })).setMimeType(ContentService.MimeType.JSON);
+    
     } else if (action === 'approveAll') {
       const studentIDs = postData.studentIDs;
       studentIDs.forEach(studentID => {
@@ -56,13 +68,14 @@ function doPost(e) {
           if (allData[i][0] && allData[i][0].toString() === studentID) {
             const rowIndex = i + 2;
             if (statusColIndex > -1) sheet.getRange(rowIndex, statusColIndex + 1).setValue("Approve");
-            break;
+            break; 
           }
         }
       });
-      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "All approved." }));
+      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "All approved." })).setMimeType(ContentService.MimeType.JSON);
     }
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: error.toString() }));
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: error.toString() })).setMimeType(ContentService.MimeType.JSON);
   }
 }
