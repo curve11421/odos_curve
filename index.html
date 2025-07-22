@@ -355,7 +355,7 @@
     </template>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7U7J5GBg2KOYHsCoG7FGl1A12dBYVZsjHy-SznWYv0GTFHeoqblhO8jnQjPT_8uX31g/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxupmd2JcgDXczHotkPGgHj2CSSuLqOBzSx39bD5UaT6ns8uBs0DXv4hR9yU5kKuhuLAQ/exec";
         const MAX_STUDENTS = 5;
         let currentStudents = new Map();
         let studentCardElements = new Map(); // เก็บ reference ของ card element
@@ -752,43 +752,36 @@
         status: status
     };
     
-    // ปิดการใช้งานปุ่มทันที
+    // ปิดการใช้งานปุ่ม
     approveBtn.disabled = true;
     disapproveBtn.disabled = true;
 
     fetch(SCRIPT_URL, {
         method: 'POST',
-        // ไม่ต้องใช้ mode: 'no-cors' แล้ว
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json', // ต้องมี Header นี้
         },
-        body: JSON.stringify(dataToPost)
+        body: JSON.stringify(dataToPost) // ต้องแปลง Object เป็น String
     })
-    .then(response => response.json()) // แปลง response เป็น JSON
+    .then(response => response.json()) // รอรับการตอบกลับแบบ JSON
     .then(data => {
-        // ตรวจสอบ response ที่ได้รับจาก Apps Script
         if (data.success) {
-            console.log(data.message); // แสดงข้อความจาก script ใน console
             alert(`Student ID ${studentID} status set to '${status}'.`);
-            
-            // หลังจากส่งข้อมูลเสร็จแล้ว ให้ลบนักเรียนออกจากหน้าจอ
+            // หน่วงเวลาเล็กน้อยก่อนลบการ์ด
             setTimeout(() => {
                 removeStudentCard(studentID);
-            }, 300); // หน่วงเวลาเล็กน้อย
+            }, 300);
         } else {
-            // หากเกิดข้อผิดพลาดจากฝั่ง script
-            console.error('Error from script:', data.message);
-            alert('An error occurred while submitting the decision: ' + data.message);
-            // เปิดใช้งานปุ่มอีกครั้งเพื่อให้ผู้ใช้ลองใหม่
+            // ถ้า Backend ส่ง error กลับมา
+            alert('An error occurred: ' + data.message);
             approveBtn.disabled = false;
             disapproveBtn.disabled = false;
         }
     })
     .catch(error => {
-        // หากเกิดข้อผิดพลาดด้านเครือข่าย
+        // ถ้าเกิดปัญหาด้าน Network
         console.error('Network Error:', error);
-        alert('A network error occurred. Please check your connection and try again.');
-        // เปิดใช้งานปุ่มอีกครั้ง
+        alert('A network error occurred. Please try again.');
         approveBtn.disabled = false;
         disapproveBtn.disabled = false;
     });
