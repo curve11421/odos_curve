@@ -1,7 +1,7 @@
 const SHEET_ID = "18pVNW1_3wYdUaOJSJkwPA0MF2h4jaUVJFNQvfHfICoY";
 const SHEET_NAME = "Sheet1";
 
-// ฟังก์ชันนี้สำคัญที่สุดสำหรับแก้ปัญหา CORS
+// ฟังก์ชันนี้สำคัญมากสำหรับ Cross-Origin Resource Sharing (CORS)
 function doOptions(e) {
   return ContentService.createTextOutput()
     .setHeader('Access-Control-Allow-Origin', '*')
@@ -9,68 +9,62 @@ function doOptions(e) {
     .setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
-function doGet(e) {
-  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
-  const data = sheet.getDataRange().getValues();
-  const headers = data.shift();
-  const results = [];
-  const searchKey = e.parameter.key;
-  const searchValue = e.parameter.value ? e.parameter.value.toLowerCase() : null;
-  if (searchValue) {
-    let searchIndex = -1;
-    if (searchKey === 'studentID') searchIndex = 0;
-    if (searchKey === 'thaiName') searchIndex = 1;
-    if (searchKey === 'englishName') searchIndex = 4;
-    if (searchIndex !== -1) {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i][searchIndex] && data[i][searchIndex].toString().toLowerCase().includes(searchValue)) {
-          let resultData = {};
-          headers.forEach((header, index) => { resultData[header] = data[i][index]; });
-          results.push(resultData);
-          if (searchKey === 'studentID') break;
-        }
-      }
-    }
-  }
-  return ContentService.createTextOutput(JSON.stringify({ data: results })).setMimeType(ContentService.MimeType.JSON);
-}
-
+// ฟังก์ชัน doPost ที่แก้ไขแล้ว
 function doPost(e) {
   try {
     const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    
+    // แปลงข้อมูลที่ส่งมาเป็น JSON
     const postData = JSON.parse(e.postData.contents);
-    const action = postData.action;
-    const allDataWithHeaders = sheet.getDataRange().getValues();
-    const headers = allDataWithHeaders.shift();
-    const allData = allDataWithHeaders;
-    const commentColIndex = headers.indexOf("Comments");
-    const statusColIndex = headers.indexOf("Status");
+    const studentID = postData.studentID;
+    const newStatus = postData.status;
+    const comment = postData.comment;
 
-    if (action === 'updateSingleStatus') {
-      const studentID = postData.studentID;
-      for (let i = 0; i < allData.length; i++) {
-        if (allData[i][0] && allData[i][0].toString() === studentID) {
-          const rowIndex = i + 2;
-          if (commentColIndex > -1) sheet.getRange(rowIndex, commentColIndex + 1).setValue(postData.comment);
-          if (statusColIndex > -1) sheet.getRange(rowIndex, statusColIndex + 1).setValue(postData.status);
-          break;
-        }
-      }
-      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "Student updated." })).setMimeType(ContentService.MimeType.JSON);
-    } else if (action === 'approveAll') {
-      const studentIDs = postData.studentIDs;
-      studentIDs.forEach(studentID => {
-        for (let i = 0; i < allData.length; i++) {
-          if (allData[i][0] && allData[i][0].toString() === studentID) {
-            const rowIndex = i + 2;
-            if (statusColIndex > -1) sheet.getRange(rowIndex, statusColIndex + 1).setValue("Approve");
-            break; 
-          }
-        }
-      });
-      return ContentService.createTextOutput(JSON.stringify({ success: true, message: "All approved." })).setMimeType(ContentService.MimeType.JSON);
+    // อ่านข้อมูลทั้งหมดในชีตเพื่อค้นหาแถวที่ถูกต้อง
+    const data = sheet.getDataRange().getValues();
+    const headers = data.shift(); // นำแถว header ออกมา
+    
+    // หาตำแหน่งคอลัมน์ "ID", "Status", และ "Comments"
+    const idColIndex = headers.indexOf("ID");
+    const statusColIndex = headers.indexOf("Status"); // คอลัมน์ O ควรมี header ชื่อ "Status"
+    const commentColIndex = headers.indexOf("Comments");
+
+    if (idColIndex === -1 || statusColIndex === -1) {
+        throw new Error("Cannot find required columns 'ID' or 'Status' in the sheet.");
     }
+    
+    let studentFound = false;
+    // วนลูปเพื่อหา studentID ที่ตรงกัน (เริ่มจากแถวที่ 2 เพราะเรา shift header ไปแล้ว)
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][idColIndex].toString() === studentID) {
+        const rowIndex = i + 2; // +2 เพราะ index ของ array เริ่มที่ 0 และมีแถว header
+        
+        // อัปเดตข้อมูลในคอลัมน์ Status (คอลัมน์ O)
+        sheet.getRange(rowIndex, statusColIndex + 1).setValue(newStatus);
+        
+        // อัปเดตข้อมูลในคอลัมน์ Comments (ถ้ามี)
+        if (commentColIndex > -1) {
+          sheet.getRange(rowIndex, commentColIndex + 1).setValue(comment);
+        }
+        
+        studentFound = true;
+        break; // ออกจากลูปเมื่อเจอข้อมูล
+      }
+    }
+
+    if (!studentFound) {
+      throw new Error(`Student with ID ${studentID} not found.`);
+    }
+
+    // ส่งการตอบกลับว่าสำเร็จ
+    return ContentService.createTextOutput(JSON.stringify({ success: true, message: `Student ${studentID} updated successfully.` }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*');
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: error.toString() })).setMimeType(ContentService.MimeType.JSON);
+    // ส่งการตอบกลับเมื่อเกิดข้อผิดพลาด
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*');
   }
 }
