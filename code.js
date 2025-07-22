@@ -1,70 +1,137 @@
-const SHEET_ID = "18pVNW1_3wYdUaOJSJkwPA0MF2h4jaUVJFNQvfHfICoY";
-const SHEET_NAME = "Sheet1";
+// กรุณาเปลี่ยนค่า SHEET_ID และ SHEET_NAME ให้ตรงกับ Google Sheet ของคุณ
+const SHEET_ID = '18pVNW1_3wYdUaOJSJkwPA0MF2h4jaUVJFNQvfHfICoY'; // <-- ใส่ ID ของ Google Sheet ที่นี่
+const SHEET_NAME = 'Sheet1'; // <-- ใส่ชื่อ Sheet ที่ต้องการใช้งาน
 
-// ฟังก์ชันนี้สำคัญมากสำหรับ Cross-Origin Resource Sharing (CORS)
+// กำหนดคอลัมน์สำหรับบันทึกข้อมูล
+const COMMENT_COL = 14; // คอลัมน์ N
+const STATUS_COL = 15;  // คอลัมน์ O
+const ID_COL = 1;       // คอลัมน์ A
+
+const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+
 function doOptions(e) {
   return ContentService.createTextOutput()
     .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+    .setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
     .setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
-
-// ฟังก์ชัน doPost ที่แก้ไขแล้ว
-function doPost(e) {
+function doGet(e) {
   try {
-    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
-    
-    // แปลงข้อมูลที่ส่งมาเป็น JSON
-    const postData = JSON.parse(e.postData.contents);
-    const studentID = postData.studentID;
-    const newStatus = postData.status;
-    const comment = postData.comment;
+    const key = e.parameter.key;
+    const value = e.parameter.value;
 
-    // อ่านข้อมูลทั้งหมดในชีตเพื่อค้นหาแถวที่ถูกต้อง
+    if (!key || !value) {
+      throw new Error("Missing search key or value.");
+    }
+    
     const data = sheet.getDataRange().getValues();
-    const headers = data.shift(); // นำแถว header ออกมา
+    const headers = data.shift(); // นำแถวแรก (header) ออกมา
     
-    // หาตำแหน่งคอลัมน์ "ID", "Status", และ "Comments"
-    const idColIndex = headers.indexOf("ID");
-    const statusColIndex = headers.indexOf("Status"); // คอลัมน์ O ควรมี header ชื่อ "Status"
-    const commentColIndex = headers.indexOf("Comments");
+    // หา index ของคอลัมน์ที่ต้องการค้นหาจาก key ที่ส่งมา
+    // สมมติว่า key ที่ส่งมา ('studentID', 'thaiName', 'englishName') ตรงกับ header ใน Sheet
+    // เราจะใช้การค้นหาจาก 'ID' ซึ่งเป็นค่าที่ส่งมาจาก key 'studentID' เป็นหลัก
+    let searchColIndex = headers.indexOf('ID'); // ค้นหาจากคอลัมน์ 'ID' เป็นหลัก
+     if (key === 'thaiName') {
+        // หากต้องการค้นหาจากชื่อไทย สามารถเพิ่ม logic ได้
+        // searchColIndex = headers.indexOf('Thai Firstname'); 
+     } else if (key === 'englishName') {
+        // หากต้องการค้นหาจากชื่ออังกฤษ
+        // searchColIndex = headers.indexOf('English Firstname');
+     }
 
-    if (idColIndex === -1 || statusColIndex === -1) {
-        throw new Error("Cannot find required columns 'ID' or 'Status' in the sheet.");
-    }
-    
-    let studentFound = false;
-    // วนลูปเพื่อหา studentID ที่ตรงกัน (เริ่มจากแถวที่ 2 เพราะเรา shift header ไปแล้ว)
-    for (let i = 0; i < data.length; i++) {
-      if (data[i][idColIndex].toString() === studentID) {
-        const rowIndex = i + 2; // +2 เพราะ index ของ array เริ่มที่ 0 และมีแถว header
-        
-        // อัปเดตข้อมูลในคอลัมน์ Status (คอลัมน์ O)
-        sheet.getRange(rowIndex, statusColIndex + 1).setValue(newStatus);
-        
-        // อัปเดตข้อมูลในคอลัมน์ Comments (ถ้ามี)
-        if (commentColIndex > -1) {
-          sheet.getRange(rowIndex, commentColIndex + 1).setValue(comment);
-        }
-        
-        studentFound = true;
-        break; // ออกจากลูปเมื่อเจอข้อมูล
-      }
-    }
+    const results = data.filter(row => {
+      // ค้นหาแบบไม่สนตัวพิมพ์เล็ก/ใหญ่ และตัดช่องว่าง
+      return String(row[searchColIndex]).trim().toLowerCase() === String(value).trim().toLowerCase();
+    }).map(row => {
+      // แปลง array ของข้อมูลให้อยู่ในรูปแบบ object { header: value }
+      const studentObj = {};
+      headers.forEach((header, index) => {
+        studentObj[header] = row[index];
+      });
+      return studentObj;
+    });
 
-    if (!studentFound) {
-      throw new Error(`Student with ID ${studentID} not found.`);
-    }
-
-    // ส่งการตอบกลับว่าสำเร็จ
-    return ContentService.createTextOutput(JSON.stringify({ success: true, message: `Student ${studentID} updated successfully.` }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeader('Access-Control-Allow-Origin', '*');
+    return ContentService
+      .createTextOutput(JSON.stringify({ data: results }))
+      .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
-    // ส่งการตอบกลับเมื่อเกิดข้อผิดพลาด
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeader('Access-Control-Allow-Origin', '*');
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: error.message }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+/**
+ * ฟังก์ชันสำหรับจัดการ POST requests (ใช้สำหรับอัปเดตสถานะ)
+ * @param {Object} e - Event object ที่มีข้อมูลที่ถูกส่งมาใน body
+ * @returns {ContentService.TextOutput} - ผลลัพธ์การทำงานในรูปแบบ JSON
+ */
+function doPost(e) {
+  try {
+    const requestData = JSON.parse(e.postData.contents);
+    const action = requestData.action;
+
+    if (action === 'updateSingleStatus') {
+      const { studentID, status, comment } = requestData;
+      if (!studentID || !status) {
+        throw new Error('Missing studentID or status for update.');
+      }
+      const result = updateStudentStatus(studentID, status, comment);
+      if (!result) {
+         throw new Error(`Student with ID ${studentID} not found.`);
+      }
+
+    } else if (action === 'approveAll') {
+      const { studentIDs } = requestData;
+      if (!studentIDs || studentIDs.length === 0) {
+        throw new Error('No student IDs provided to approve.');
+      }
+      studentIDs.forEach(id => {
+        // สำหรับ Approve All จะไม่มี comment
+        updateStudentStatus(id, 'Approve', ''); 
+      });
+
+    } else {
+      throw new Error('Invalid action specified.');
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true, message: "Update successful" }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, message: error.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+
+/**
+ * ฟังก์ชันสำหรับค้นหาแถวและอัปเดตข้อมูลนักเรียน
+ * @param {string} studentID - ID ของนักเรียนที่ต้องการอัปเดต
+ * @param {string} status - สถานะ (Approve/Disapprove)
+ * @param {string} comment - ความคิดเห็น
+ * @returns {boolean} - คืนค่า true หากอัปเดตสำเร็จ, false หากไม่พบนักเรียน
+ */
+function updateStudentStatus(studentID, status, comment) {
+    const idColumnValues = sheet.getRange(1, ID_COL, sheet.getLastRow(), 1).getValues();
+    let rowIndex = -1;
+
+    for (let i = 0; i < idColumnValues.length; i++) {
+        if (String(idColumnValues[i][0]).trim() === String(studentID).trim()) {
+            rowIndex = i + 1; // rowIndex ใน Google Sheet เริ่มที่ 1
+            break;
+        }
+    }
+
+    if (rowIndex !== -1) {
+        // อัปเดตคอลัมน์ N (Comment) และ O (Status)
+        sheet.getRange(rowIndex, COMMENT_COL).setValue(comment);
+        sheet.getRange(rowIndex, STATUS_COL).setValue(status);
+        return true;
+    }
+
+    return false; // ไม่พบ ID
 }

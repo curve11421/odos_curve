@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ODOS Student Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/country-flag-icons@1.2.0/css/flag-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/country-flag-icons@1.5.7/css/flag-icons.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
         body { font-family: 'Sarabun', sans-serif; background-color: #FEFDF7; margin: 0; padding: 20px; color: #333; }
@@ -90,7 +90,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzQXVOlmF5qRnrB_YIvvxLii71MTx19EsTRce7L9Ycy0uW7jiRoF7Ex7VQtqWpgEYQ5A/exec"; 
+        const SCRIPT_URL = "https://sheetdb.io/api/v1/5vlfsjq8f4jf1"; 
         const MAX_STUDENTS = 5;
 
         const studentIdInput = document.getElementById('studentId');
@@ -124,26 +124,40 @@
         approveAllBtn.addEventListener('click', approveAllVisibleStudents);
 
         function searchStudent(key, value) {
-            if (!value) return;
-            if (displayedStudentIds.size >= MAX_STUDENTS) { maxStudentsMessage.style.display = 'block'; return; }
-            loadingDiv.style.display = 'block';
-            disableSearchInputs(true);
+    if (!value) return;
+    if (displayedStudentIds.size >= MAX_STUDENTS) {
+        maxStudentsMessage.style.display = 'block';
+        return;
+    }
+    loadingDiv.style.display = 'block';
+    disableSearchInputs(true);
 
-            fetch(`${SCRIPT_URL}?key=${key}&value=${encodeURIComponent(value)}`)
-                .then(response => response.json())
-                .then(res => {
-                    if (res.data && res.data.length > 0) {
-                        addStudentsToDisplay(res.data);
-                    } else {
-                        alert('Student not found');
-                    }
-                })
-                .catch(error => console.error('Error:', error))
-                .finally(() => {
-                    loadingDiv.style.display = 'none';
-                    disableSearchInputs(false);
-                });
-        }
+    // แปลง key จาก 'studentID' เป็น 'ID' ให้ตรงกับชื่อคอลัมน์ใน Sheet
+    const searchColumn = (key === 'studentID') ? 'ID' : key;
+
+    // สร้าง URL สำหรับค้นหาข้อมูลในรูปแบบที่ SheetDB เข้าใจ
+    const searchUrl = `${SCRIPT_URL}/search?${searchColumn}=${encodeURIComponent(value)}`;
+
+    fetch(searchUrl)
+        .then(response => response.json())
+        .then(res => {
+            // SheetDB จะคืนค่าเป็น Array, ถ้าเจอข้อมูล length จะมากกว่า 0
+            if (res && res.length > 0) {
+                // เนื่องจาก SheetDB คืนค่าเป็น Array ให้ส่ง res ไปทั้งก้อน
+                addStudentsToDisplay(res);
+            } else {
+                alert('Student not found');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during search.');
+        })
+        .finally(() => {
+            loadingDiv.style.display = 'none';
+            disableSearchInputs(false);
+        });
+}
         
         function addStudentsToDisplay(students) {
             const template = document.getElementById('studentCardTemplate');
@@ -207,70 +221,113 @@
         }
 
         // --- ADD THIS FUNCTION BACK ---
-        function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
-            approveBtn.disabled = true;
-            disapproveBtn.disabled = true;
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'updateSingleStatus', studentID, status, comment })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert(`Student ID ${studentID} status set to '${status}'.`);
-                    const card = approveBtn.closest('.student-card');
-                    card.style.opacity = '0.5';
-                } else {
-                    throw new Error(data.message || 'Failed to update.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred during update. Please try again.');
-                approveBtn.disabled = false;
-                disapproveBtn.disabled = false;
-            });
+        // --- REPLACE THE OLD FUNCTION WITH THIS NEW ONE ---
+function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
+    approveBtn.disabled = true;
+    disapproveBtn.disabled = true;
+
+    //  สร้าง object ที่มีเฉพาะข้อมูลที่จะอัปเดต
+    const dataToUpdate = {
+        'Status': status,    // 'Status' ต้องตรงกับชื่อคอลัมน์ใน Sheet
+        'Comment': comment   // 'Comment' ต้องตรงกับชื่อคอลัมน์ใน Sheet
+    };
+
+    // ส่ง request ไปยัง SheetDB เพื่ออัปเดตแถวที่คอลัมน์ 'ID' ตรงกับ studentID
+    fetch(`${SCRIPT_URL}/ID/${studentID}`, {
+        method: 'PATCH',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data: dataToUpdate
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        // ตรวจสอบว่ามีการอัปเดตเกิดขึ้นจริง (updated > 0)
+        if (data.updated > 0) {
+            alert(`Student ID ${studentID} status set to '${status}'.`);
+            const card = approveBtn.closest('.student-card');
+            card.style.opacity = '0.5';
+        } else {
+            throw new Error(`Failed to update. Student ID ${studentID} not found.`);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during update. Please try again.');
+        // คืนสภาพปุ่มให้กดได้อีกครั้งหากเกิดข้อผิดพลาด
+        approveBtn.disabled = false;
+        disapproveBtn.disabled = false;
+    });
+}
         // --- END OF ADDED FUNCTION ---
 
-        function approveAllVisibleStudents() {
-            const visibleCards = document.querySelectorAll('.student-card-wrapper');
-            if (visibleCards.length === 0) { alert("No students to approve."); return; }
-            const studentIDs = Array.from(visibleCards).map(card => card.dataset.id);
-            
-            approveAllBtn.disabled = true;
-            approveAllBtn.textContent = 'Approving...';
+        // --- REPLACE THE OLD FUNCTION WITH THIS CORRECTED ONE ---
+// --- REPLACE THE FUNCTION AGAIN WITH THIS NEW VERSION ---
+// --- THIS IS THE FINAL AND CORRECTED VERSION ---
+function approveAllVisibleStudents() {
+    const visibleCards = document.querySelectorAll('.student-card-wrapper');
+    if (visibleCards.length === 0) {
+        alert("No students to approve.");
+        return;
+    }
 
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'approveAll', studentIDs })
+    const approveAllBtn = document.querySelector('.btn-approve-all');
+    approveAllBtn.disabled = true;
+    approveAllBtn.textContent = 'Approving...';
+
+    // 1. สร้างรายการ "งาน" ที่ต้องทำ (ส่ง PATCH request ทีละคน)
+    const updatePromises = Array.from(visibleCards).map(card => {
+        const studentID = card.dataset.id;
+        const dataToUpdate = {
+            'Status': 'Approve',
+            'Comment': '' // Approve All จะไม่มี comment
+        };
+
+        // ส่ง request เพื่ออัปเดตนักเรียนคนนี้โดยเฉพาะ (เหมือนตอนกด Approve รายคน)
+        return fetch(`${SCRIPT_URL}/ID/${studentID}`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: dataToUpdate
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                   alert('All visible students have been approved.');
-                    visibleCards.forEach(card => {
-                        card.querySelector('.btn-approve').style.backgroundColor = 'grey';
-                        card.querySelector('.btn-approve').disabled = true;
-                        card.querySelector('.btn-disapprove').style.display = 'none';
-                    });
-                } else {
-                   throw new Error(data.message || 'Failed to approve all.');
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                alert('An error occurred during bulk approval.');
-            })
-            .finally(() => {
-                approveAllBtn.disabled = false;
-                approveAllBtn.textContent = 'Approve All';
+        }).then(res => {
+            if (!res.ok) {
+                // ถ้ามี request ไหนล้มเหลว ให้โยน error ทันที
+                throw new Error(`Failed to update student ID ${studentID}`);
+            }
+            return res.json();
+        });
+    });
+
+    // 2. ใช้ Promise.all เพื่อรอให้ทุก "งาน" ในรายการสำเร็จทั้งหมด
+    Promise.all(updatePromises)
+        .then(results => {
+            // เมื่อทุกอย่างสำเร็จ
+            alert(`${results.length} students have been approved.`);
+            visibleCards.forEach(card => {
+                card.style.opacity = '0.5';
+                const approveBtn = card.querySelector('.btn-approve');
+                const disapproveBtn = card.querySelector('.btn-disapprove');
+                if(approveBtn) approveBtn.disabled = true;
+                if(disapproveBtn) disapproveBtn.disabled = true;
             });
-        }
+        })
+        .catch(err => {
+            // ถ้ามีงานไหนล้มเหลวแม้แต่งานเดียว จะเข้ามาทำงานในนี้
+            console.error('Error during one of the update requests:', err);
+            alert('An error occurred. Some students may not have been approved.');
+        })
+        .finally(() => {
+            approveAllBtn.disabled = false;
+            approveAllBtn.textContent = 'Approve All';
+        });
+}
         
         function clearAll() { 
             studentListContainer.innerHTML = ''; 
