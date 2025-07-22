@@ -33,23 +33,19 @@
             border: 1px solid #E0E0E0;
             margin-bottom: 20px;
         }
-        
-        /* ปรับสไตล์ให้ฟอร์มและปุ่มอยู่คู่กัน */
         .search-form-container {
             display: flex;
             gap: 20px;
         }
-        
         .search-students {
             flex: 1;
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-        
         .search-row {
             display: grid;
-            grid-template-columns: 150px 300px; /* ลดขนาดช่อง input */
+            grid-template-columns: 150px 300px;
             gap: 15px;
             align-items: center;
             padding: 15px;
@@ -57,12 +53,10 @@
             border-radius: 8px;
             background-color: #FAFAFA;
         }
-        
         .search-row label {
             font-weight: bold;
             color: #555;
         }
-        
         .search-row input {
             padding: 10px;
             border: 1px solid #CCC;
@@ -70,8 +64,6 @@
             font-size: 16px;
             width: 100%;
         }
-        
-        /* ปรับสไตล์ปุ่มให้อยู่ทางขวาและเรียงตัวในแนวตั้ง */
         .control-buttons {
             display: flex;
             flex-direction: column;
@@ -80,89 +72,65 @@
             align-self: flex-start;
             margin-top: 0;
         }
-        
-        .btn { 
-            padding: 15px 20px; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            cursor: pointer; 
+        .btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: all 0.3s;
             width: 100%;
             text-align: center;
         }
-        
-        .btn-clear { 
-            background-color: #E0E0E0; 
-            color: #333; 
+        .btn-clear {
+            background-color: #E0E0E0;
+            color: #333;
         }
-        
         .btn-clear:hover {
             background-color: #D0D0D0;
         }
-        
         .btn-search-all {
             background-color: #F8D442;
             color: #333;
         }
-        
         .btn-search-all:hover {
             background-color: #F5D020;
         }
-        
-        .btn-search-all:disabled {
+        .btn-search-all:disabled, .btn-approve-all:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
-        
-        .btn-approve-all { 
-            background-color: #4CAF50; 
-            color: white; 
+        .btn-approve-all {
+            background-color: #4CAF50;
+            color: white;
         }
-        
         .btn-approve-all:hover {
             background-color: #45A049;
         }
-        
-        .btn-approve-all:disabled { 
-            background-color: #cccccc; 
-            cursor: not-allowed; 
-        }
-        
         .loading, .message { text-align: center; padding: 20px; font-size: 18px; }
-        
-        /* เพิ่มสไตล์สำหรับแสดงจำนวนผลการค้นหา */
         .search-results-info {
             background-color: #E3F2FD;
             border: 1px solid #2196F3;
-            border-radius: 4px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
             color: #1976D2;
         }
         .search-results-warning {
             background-color: #FFF3E0;
             border: 1px solid #FF9800;
-            border-radius: 4px;
-            padding: 10px;
-            margin-bottom: 20px;
-            text-align: center;
             color: #F57C00;
         }
         .search-results-error {
             background-color: #FFEBEE;
             border: 1px solid #F44336;
+            color: #D32F2F;
+        }
+        .search-results-info, .search-results-warning, .search-results-error {
             border-radius: 4px;
             padding: 10px;
             margin-bottom: 20px;
             text-align: center;
-            color: #D32F2F;
         }
-
-        /* Styles for Multiple Student Cards */
         .student-list-container {
             display: flex;
             flex-wrap: nowrap;
@@ -172,8 +140,8 @@
             overflow-x: auto;
             padding: 10px 0;
         }
-        .student-card-wrapper { 
-            flex-shrink: 0; 
+        .student-card-wrapper {
+            flex-shrink: 0;
             transition: all 0.3s ease;
         }
         .student-card-wrapper.removing {
@@ -188,36 +156,11 @@
         .student-card.highlight-na {
             border: 2px solid #F44336;
             background-color: #FFEBEE;
-            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
         }
         .student-card.highlight-na .eng-name {
             color: #D32F2F;
         }
-        .student-card.approved {
-            border: 2px solid #4CAF50;
-            background-color: #E8F5E8;
-        }
-        .student-card.disapproved {
-            border: 2px solid #F44336;
-            background-color: #FFEBEE;
-        }
         .na-indicator {
-            background-color: #F44336;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .approved-indicator {
-            background-color: #4CAF50;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .disapproved-indicator {
             background-color: #F44336;
             color: white;
             padding: 2px 6px;
@@ -243,29 +186,22 @@
         .btn-approve { background-color: #4CAF50; color: white; }
         .btn-disapprove { background-color: #F44336; color: white; }
         .btn-action:disabled { background-color: #cccccc; cursor: not-allowed; }
-
-        /* เพิ่ม Animation สำหรับการหายไป */
         @keyframes fadeOut {
             from { opacity: 1; transform: scale(1); }
             to { opacity: 0; transform: scale(0.8); }
         }
-        
         .fade-out {
             animation: fadeOut 0.3s ease forwards;
         }
-
-        /* Responsive design */
         @media (max-width: 768px) {
             .search-form-container {
                 flex-direction: column;
             }
-            
             .control-buttons {
                 width: 100%;
                 flex-direction: row;
                 justify-content: space-around;
             }
-            
             .search-row {
                 grid-template-columns: 120px 1fr;
             }
@@ -287,22 +223,18 @@
                         <label for="studentId1">Student ID #1:</label>
                         <input type="text" id="studentId1" placeholder="Enter Student ID">
                     </div>
-                    
                     <div class="search-row">
                         <label for="studentId2">Student ID #2:</label>
                         <input type="text" id="studentId2" placeholder="Enter Student ID">
                     </div>
-                    
                     <div class="search-row">
                         <label for="studentId3">Student ID #3:</label>
                         <input type="text" id="studentId3" placeholder="Enter Student ID">
                     </div>
-                    
                     <div class="search-row">
                         <label for="studentId4">Student ID #4:</label>
                         <input type="text" id="studentId4" placeholder="Enter Student ID">
                     </div>
-                    
                     <div class="search-row">
                         <label for="studentId5">Student ID #5:</label>
                         <input type="text" id="studentId5" placeholder="Enter Student ID">
@@ -319,7 +251,6 @@
 
         <div class="loading" id="loading" style="display: none;">Searching...</div>
         
-        <!-- เพิ่มส่วนแสดงข้อมูลผลการค้นหา -->
         <div id="searchResultsInfo" style="display: none;"></div>
         
         <div id="studentListContainer" class="student-list-container"></div>
@@ -355,36 +286,33 @@
     </template>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxupmd2JcgDXczHotkPGgHj2CSSuLqOBzSx39bD5UaT6ns8uBs0DXv4hR9yU5kKuhuLAQ/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxupmd2JcgDXczHotkPGgHj2CSSuLqOBzSx39bD5UaT6ns8uBs0DXv4hR9yU5kKuhuLAQ/exec"; // ‼️‼️ ใส่ URL ใหม่ของคุณที่นี่ ‼️‼️
         const MAX_STUDENTS = 5;
         let currentStudents = new Map();
-        let studentCardElements = new Map(); // เก็บ reference ของ card element
+        let studentCardElements = new Map();
 
         const loadingDiv = document.getElementById('loading');
         const studentListContainer = document.getElementById('studentListContainer');
         const searchResultsInfo = document.getElementById('searchResultsInfo');
         const approveAllBtn = document.getElementById('approveAllBtn');
 
-        // เพิ่ม event listener สำหรับปุ่ม Approve All
         approveAllBtn.addEventListener('click', approveAllStudents);
 
-        // เพิ่ม event listener สำหรับการกด Enter ในแต่ละช่อง
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= MAX_STUDENTS; i++) {
             const input = document.getElementById(`studentId${i}`);
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    searchAllFields();
-                }
-            });
+            if (input) {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        searchAllFields();
+                    }
+                });
+            }
         }
 
         function clearAll() {
-            // Clear all input fields
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= MAX_STUDENTS; i++) {
                 document.getElementById(`studentId${i}`).value = '';
             }
-            
-            // Clear all displayed students
             currentStudents.clear();
             studentCardElements.clear();
             studentListContainer.innerHTML = '';
@@ -392,7 +320,7 @@
         }
 
         function disableSearchInputs(disabled) {
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= MAX_STUDENTS; i++) {
                 document.getElementById(`studentId${i}`).disabled = disabled;
             }
             document.querySelector('.btn-search-all').disabled = disabled;
@@ -400,26 +328,16 @@
 
         function searchAllFields() {
             const fieldsToSearch = [];
-            
-            // เช็ค Student ID fields
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= MAX_STUDENTS; i++) {
                 const value = document.getElementById(`studentId${i}`).value.trim();
                 if (value) {
-                    fieldsToSearch.push({key: 'studentID', value: value});
+                    fieldsToSearch.push({ key: 'studentID', value: value });
                 }
             }
-            
             if (fieldsToSearch.length === 0) {
                 alert('Please enter at least one Student ID.');
                 return;
             }
-            
-            if (currentStudents.size >= MAX_STUDENTS) {
-                showMessage('Maximum 5 students can be displayed at once. Please clear some students first.', 'error');
-                return;
-            }
-
-            // ค้นหาแบบพร้อมกัน
             searchMultipleStudents(fieldsToSearch);
         }
 
@@ -427,29 +345,22 @@
             loadingDiv.style.display = 'block';
             disableSearchInputs(true);
             
-            const searchPromises = fieldsToSearch.map(field => {
-                return fetch(`${SCRIPT_URL}?key=${field.key}&value=${encodeURIComponent(field.value)}`)
+            const searchPromises = fieldsToSearch.map(field =>
+                fetch(`${SCRIPT_URL}?key=${field.key}&value=${encodeURIComponent(field.value)}`)
                     .then(response => response.json())
                     .then(res => {
-                        if (res.data && res.data.length > 0) {
-                            return res.data;
-                        }
+                        if (res.data && res.data.length > 0) return res.data;
                         return [];
                     })
                     .catch(error => {
-                        console.error(`Error searching for ${field.key}:`, error);
+                        console.error(`Error searching for ${field.value}:`, error);
                         return [];
-                    });
-            });
+                    })
+            );
 
             Promise.all(searchPromises)
                 .then(results => {
-                    // รวมผลลัพธ์จากการค้นหาทั้งหมด
-                    const allStudents = [];
-                    results.forEach(studentList => {
-                        allStudents.push(...studentList);
-                    });
-                    
+                    const allStudents = results.flat();
                     if (allStudents.length > 0) {
                         addStudentsToList(allStudents);
                     } else {
@@ -462,29 +373,14 @@
                 });
         }
 
-        function searchStudentById(inputId) {
-            const input = document.getElementById(inputId);
-            const value = input.value.trim();
-            if (value) {
-                searchStudent('studentID', value);
-            } else {
-                alert('Please enter a Student ID to search.');
-            }
-        }
-
         function removeStudentCard(studentId) {
             const cardElement = studentCardElements.get(studentId);
             if (cardElement) {
-                // เพิ่ม animation fade out
                 cardElement.classList.add('fade-out');
-                
-                // หลังจาก animation เสร็จแล้วค่อยลบออกจาก DOM
                 setTimeout(() => {
                     cardElement.remove();
                     currentStudents.delete(studentId);
                     studentCardElements.delete(studentId);
-                    
-                    // อัพเดตข้อมูลจำนวนนักเรียนที่แสดง
                     updateStudentCountDisplay();
                 }, 300);
             }
@@ -494,7 +390,7 @@
             if (currentStudents.size === 0) {
                 searchResultsInfo.style.display = 'none';
             } else {
-                showMessage(`Total: ${currentStudents.size}/${MAX_STUDENTS} students displayed.`, 'info');
+                showMessage(`Displaying ${currentStudents.size}/${MAX_STUDENTS} students.`, 'info');
             }
         }
 
@@ -503,7 +399,6 @@
                 alert('No students to approve.');
                 return;
             }
-
             if (!confirm(`Are you sure you want to approve all ${currentStudents.size} students?`)) {
                 return;
             }
@@ -512,104 +407,58 @@
             approveAllBtn.textContent = 'Approving...';
             
             let approvalPromises = [];
-            let approvedCount = 0;
-            let studentsToRemove = [];
+            let studentsToRemove = new Set();
+            let failedStudents = [];
 
             currentStudents.forEach((student, studentId) => {
                 const cardElement = studentCardElements.get(studentId);
                 if (!cardElement) return;
 
-                const commentsTextarea = cardElement.querySelector('.comments-textarea');
                 const approveBtn = cardElement.querySelector('.btn-approve');
-                const disapproveBtn = cardElement.querySelector('.btn-disapprove');
-                
-                // Skip if already approved/disapproved
                 if (approveBtn.disabled) return;
 
-                const comment = commentsTextarea.value || 'Bulk approved';
+                const comment = cardElement.querySelector('.comments-textarea').value || 'Bulk approved';
                 
-                const dataToPost = {
-                    studentID: studentId,
-                    comment: comment,
-                    status: 'Approve'
-                };
+                const dataToPost = { studentID: studentId, comment: comment, status: 'Approve' };
 
-                // Disable buttons immediately
-                approveBtn.disabled = true;
-                disapproveBtn.disabled = true;
-
+                // ================== START: EDIT THIS SECTION ==================
                 const promise = fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' }, // เพิ่ม Header ที่ถูกต้อง
                     body: JSON.stringify(dataToPost)
                 })
-                .then(() => {
-                    approvedCount++;
-                    
-                    // เพิ่มนักเรียนเข้าในรายการที่จะลบ
-                    studentsToRemove.push(studentId);
+                .then(response => response.json()) // รอรับการตอบกลับ
+                .then(data => {
+                    if (data.success) { // เช็คสถานะจาก Backend
+                        studentsToRemove.add(studentId);
+                    } else {
+                        failedStudents.push(studentId);
+                        console.error(`Failed to approve ${studentId}: ${data.message}`);
+                    }
                 })
                 .catch(error => {
+                    failedStudents.push(studentId);
                     console.error(`Error approving student ${studentId}:`, error);
-                    // Re-enable buttons on error
-                    approveBtn.disabled = false;
-                    disapproveBtn.disabled = false;
                 });
+                // =================== END: EDIT THIS SECTION ===================
 
                 approvalPromises.push(promise);
             });
 
-            Promise.allSettled(approvalPromises)
-                .then(() => {
-                    if (approvedCount > 0) {
-                        alert(`Successfully approved ${approvedCount} students.`);
-                        
-                        // ลบนักเรียนที่ได้รับการอนุมัติออกจากหน้าจอ
-                        studentsToRemove.forEach(studentId => {
-                            setTimeout(() => {
-                                removeStudentCard(studentId);
-                            }, 500); // ให้เวลาสำหรับ alert ก่อน
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error in bulk approval:', error);
-                    alert('Some approvals may have failed. Please check individual students.');
-                })
-                .finally(() => {
-                    approveAllBtn.disabled = false;
-                    approveAllBtn.textContent = 'Approve All';
+            Promise.allSettled(approvalPromises).then(() => {
+                let message = `Successfully approved ${studentsToRemove.size} students.`;
+                if (failedStudents.length > 0) {
+                    message += `\nFailed to approve ${failedStudents.length} students: ${failedStudents.join(', ')}. Please check logs and try again.`;
+                }
+                alert(message);
+
+                studentsToRemove.forEach(studentId => {
+                    removeStudentCard(studentId);
                 });
-        }
 
-        function searchStudent(key, value) {
-            if (!value) return;
-            
-            if (currentStudents.size >= MAX_STUDENTS) {
-                showMessage('Maximum 5 students can be displayed at once. Please clear some students first.', 'error');
-                return;
-            }
-
-            loadingDiv.style.display = 'block';
-            disableSearchInputs(true);
-
-            fetch(`${SCRIPT_URL}?key=${key}&value=${encodeURIComponent(value)}`)
-                .then(response => response.json())
-                .then(res => {
-                    if (res.data && res.data.length > 0) {
-                        addStudentsToList(res.data);
-                    } else {
-                        showMessage('Student not found.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showMessage('An error occurred while searching.', 'error');
-                })
-                .finally(() => {
-                    loadingDiv.style.display = 'none';
-                    disableSearchInputs(false);
-                });
+                approveAllBtn.disabled = false;
+                approveAllBtn.textContent = 'Approve All';
+            });
         }
 
         function addStudentsToList(students) {
@@ -618,15 +467,11 @@
 
             students.forEach(student => {
                 const studentId = student['ID'];
-                
                 if (currentStudents.has(studentId)) {
                     duplicateCount++;
                     return;
                 }
-
-                if (currentStudents.size >= MAX_STUDENTS) {
-                    return;
-                }
+                if (currentStudents.size >= MAX_STUDENTS) return;
 
                 currentStudents.set(studentId, student);
                 newStudentsAdded++;
@@ -635,22 +480,12 @@
             displayAllStudents();
 
             let message = '';
-            if (newStudentsAdded > 0) {
-                message += `Added ${newStudentsAdded} student${newStudentsAdded > 1 ? 's' : ''}. `;
-            }
-            if (duplicateCount > 0) {
-                message += `${duplicateCount} student${duplicateCount > 1 ? 's' : ''} already displayed. `;
-            }
-            if (currentStudents.size >= MAX_STUDENTS) {
-                message += `Maximum ${MAX_STUDENTS} students displayed.`;
-            } else {
-                message += `Total: ${currentStudents.size}/${MAX_STUDENTS} students displayed.`;
-            }
-
-            if (message) {
-                const messageType = (newStudentsAdded > 0) ? 'info' : 'warning';
-                showMessage(message, messageType);
-            }
+            if (newStudentsAdded > 0) message += `Added ${newStudentsAdded} new student(s). `;
+            if (duplicateCount > 0) message += `${duplicateCount} student(s) already displayed. `;
+            message += `Total: ${currentStudents.size}/${MAX_STUDENTS} students.`;
+            
+            const messageType = newStudentsAdded > 0 ? 'info' : 'warning';
+            showMessage(message, messageType);
         }
 
         function displayAllStudents() {
@@ -658,57 +493,51 @@
             studentListContainer.innerHTML = '';
             studentCardElements.clear();
 
-            if (currentStudents.size === 0) {
-                return;
-            }
+            if (currentStudents.size === 0) return;
 
             currentStudents.forEach(student => {
-                const card = template.content.cloneNode(true);
+                const cardWrapper = template.content.cloneNode(true);
+                const card = cardWrapper.querySelector('.student-card');
                 
                 let hasNAData = false;
                 
+                // Helper to set text and check for N/A
+                const setText = (selector, value, isNA) => {
+                    const el = card.querySelector(selector);
+                    if (el) el.textContent = value;
+                    if (isNA) hasNAData = true;
+                };
+
+                setText('.profile-image', '', !student['Image']);
                 card.querySelector('.profile-image').src = student['Image'] || 'https://via.placeholder.com/100';
-                card.querySelector('.eng-name').textContent = `${student['English Firstname']} ${student['English Lastname']}`;
-                card.querySelector('.country').textContent = student['Country'] || 'N/A';
-                card.querySelector('.info-id').textContent = student['ID'];
-                card.querySelector('.info-thai-name').textContent = `${student['Thai Firstname']} ${student['Thai Lastname']}`;
+                setText('.eng-name', `${student['English Firstname'] || ''} ${student['English Lastname'] || ''}`.trim());
+                setText('.country', student['Country'], !student['Country']);
+                setText('.info-id', student['ID']);
+                setText('.info-thai-name', `${student['Thai Firstname'] || ''} ${student['Thai Lastname'] || ''}`.trim());
                 
                 const birthDateStr = student['Date of Birth'];
-                if (birthDateStr) {
-                    const dateParts = birthDateStr.split('/');
-                    if (dateParts.length === 3) {
-                        const birthDate = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-                        card.querySelector('.info-birth-date').textContent = birthDate.toLocaleDateString('en-GB');
-                        const birthYear = birthDate.getFullYear();
-                        if (!isNaN(birthYear)) {
-                            card.querySelector('.info-age').textContent = `${2025 - birthYear} years`;
-                        }
-                    } else {
-                         card.querySelector('.info-birth-date').textContent = 'Invalid Date';
-                         card.querySelector('.info-age').textContent = 'N/A';
-                         hasNAData = true;
-                    }
+                if (birthDateStr && typeof birthDateStr === 'string' && birthDateStr.split('/').length === 3) {
+                    const [day, month, year] = birthDateStr.split('/');
+                    const birthDate = new Date(+year, month - 1, +day);
+                    setText('.info-birth-date', birthDate.toLocaleDateString('en-GB'));
+                    setText('.info-age', `${new Date().getFullYear() - birthDate.getFullYear()} years`);
                 } else {
-                    card.querySelector('.info-birth-date').textContent = 'N/A';
-                    card.querySelector('.info-age').textContent = 'N/A';
-                    hasNAData = true;
+                    setText('.info-birth-date', 'N/A', true);
+                    setText('.info-age', 'N/A', true);
                 }
-                
-                const provinceValue = student['จังหวัดตามทะเบียนบ้าน'] || 'N/A';
-                const gpaValue = student['เกรดเฉลี่ยภาคการศึกษาก่อนหน้า (GPA)'] || 'N/A';
-                const englishGpaValue = student['เกรดวิชาภาษาอังกฤษเทอมก่อนหน้า'] || 'N/A';
-                const studyStatusValue = student['อยู่ระหว่างการศึกษา'] || 'N/A';
-                const countryValue = student['Country'] || 'N/A';
-                
-                if (provinceValue === 'N/A' || gpaValue === 'N/A' || englishGpaValue === 'N/A' || 
-                    studyStatusValue === 'N/A' || countryValue === 'N/A') {
-                    hasNAData = true;
+
+                setText('.info-province', student['จังหวัดตามทะเบียนบ้าน'], !student['จังหวัดตามทะเบียนบ้าน']);
+                setText('.info-gpa', student['เกรดเฉลี่ยภาคการศึกษาก่อนหน้า (GPA)'], !student['เกรดเฉลี่ยภาคการศึกษาก่อนหน้า (GPA)']);
+                setText('.info-EnglishGPA', student['เกรดวิชาภาษาอังกฤษเทอมก่อนหน้า'], !student['เกรดวิชาภาษาอังกฤษเทอมก่อนหน้า']);
+                setText('.info-study-status', student['อยู่ระหว่างการศึกษา'], !student['อยู่ระหว่างการศึกษา']);
+
+                if (hasNAData) {
+                    card.classList.add('highlight-na');
+                    const indicator = document.createElement('div');
+                    indicator.className = 'na-indicator';
+                    indicator.textContent = 'Missing Data';
+                    card.insertBefore(indicator, card.querySelector('.eng-name'));
                 }
-                
-                card.querySelector('.info-province').textContent = provinceValue;
-                card.querySelector('.info-gpa').textContent = gpaValue;
-                card.querySelector('.info-EnglishGPA').textContent = englishGpaValue;
-                card.querySelector('.info-study-status').textContent = studyStatusValue;
 
                 const studentId = student['ID'];
                 const approveBtn = card.querySelector('.btn-approve');
@@ -718,74 +547,46 @@
                 approveBtn.addEventListener('click', () => submitDecision(studentId, 'Approve', commentsTextarea.value, approveBtn, disapproveBtn));
                 disapproveBtn.addEventListener('click', () => submitDecision(studentId, 'Disapprove', commentsTextarea.value, approveBtn, disapproveBtn));
 
-                studentListContainer.appendChild(card);
-                
-                // เก็บ reference ของ card element
-                const cardElement = studentListContainer.lastElementChild;
-                studentCardElements.set(studentId, cardElement);
-                
-                if (hasNAData) {
-                    const cardElemelntInner = cardElement.querySelector('.student-card');
-                    cardElementInner.classList.add('highlight-na');
-                    
-                    const indicator = document.createElement('div');
-                    indicator.className = 'na-indicator';
-                    indicator.textContent = 'Missing Data';
-                    cardElementInner.insertBefore(indicator, cardElementInner.querySelector('.eng-name'));
-                }
+                studentListContainer.appendChild(cardWrapper);
+                studentCardElements.set(studentId, studentListContainer.lastElementChild);
             });
         }
 
         function showMessage(message, type = 'info') {
-            let className = 'search-results-info';
-            if (type === 'warning') className = 'search-results-warning';
-            if (type === 'error') className = 'search-results-error';
-
-            searchResultsInfo.innerHTML = `<div class="${className}">${message}</div>`;
+            searchResultsInfo.className = `search-results-${type}`;
+            searchResultsInfo.textContent = message;
             searchResultsInfo.style.display = 'block';
         }
 
         function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
-    const dataToPost = {
-        studentID: studentID,
-        comment: comment,
-        status: status
-    };
-    
-    // ปิดการใช้งานปุ่ม
-    approveBtn.disabled = true;
-    disapproveBtn.disabled = true;
+            const dataToPost = { studentID, status, comment };
+            
+            approveBtn.disabled = true;
+            disapproveBtn.disabled = true;
 
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json', // ต้องมี Header นี้
-        },
-        body: JSON.stringify(dataToPost) // ต้องแปลง Object เป็น String
-    })
-    .then(response => response.json()) // รอรับการตอบกลับแบบ JSON
-    .then(data => {
-        if (data.success) {
-            alert(`Student ID ${studentID} status set to '${status}'.`);
-            // หน่วงเวลาเล็กน้อยก่อนลบการ์ด
-            setTimeout(() => {
-                removeStudentCard(studentID);
-            }, 300);
-        } else {
-            // ถ้า Backend ส่ง error กลับมา
-            alert('An error occurred: ' + data.message);
-            approveBtn.disabled = false;
-            disapproveBtn.disabled = false;
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToPost)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Student ID ${studentID} status set to '${status}'.`);
+                    removeStudentCard(studentID);
+                } else {
+                    alert('An error occurred: ' + data.message);
+                    approveBtn.disabled = false;
+                    disapproveBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Network Error:', error);
+                alert('A network error occurred. Please check your connection and try again.');
+                approveBtn.disabled = false;
+                disapproveBtn.disabled = false;
+            });
         }
-    })
-    .catch(error => {
-        // ถ้าเกิดปัญหาด้าน Network
-        console.error('Network Error:', error);
-        alert('A network error occurred. Please try again.');
-        approveBtn.disabled = false;
-        disapproveBtn.disabled = false;
-    });
-}
     </script>
 </body>
 </html>
