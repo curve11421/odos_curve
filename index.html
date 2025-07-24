@@ -97,48 +97,70 @@
         const englishNameInput = document.getElementById('englishName');
         const loadingDiv = document.getElementById('loading');
         const studentListContainer = document.getElementById('studentListContainer');
-        const searchBtn = document.querySelector('.btn-add'); // Changed from searchIdBtn
+        const searchBtn = document.querySelector('.btn-add');
         const approveAllBtn = document.querySelector('.btn-approve-all');
         const maxStudentsMessage = document.getElementById('maxStudentsMessage');
         const displayedStudentIds = new Set();
         const countryCodeMap = { 'USA': 'us', 'Japan': 'jp', 'China': 'cn', 'Singapore': 'sg', 'Finland': 'fi', 'Australia': 'au', 'Korea': 'kr', 'เกาหลีใต้': 'kr', 'Thailand': 'th', 'United States': 'us', 'United Kingdom': 'gb', 'UK': 'gb', 'Canada': 'ca', 'Germany': 'de', 'France': 'fr', 'Italy': 'it', 'Spain': 'es', 'India': 'in', 'Brazil': 'br', 'Russia': 'ru' , 'Estonia': 'ee' };
         
-        // --- START: MODIFIED SEARCH LOGIC ---
-        searchBtn.addEventListener('click', () => {
-            // Determine which field has a value and call the search function
-            if (studentIdInput.value) {
-                searchStudent('ID', studentIdInput.value);
-            } else if (thaiNameInput.value) {
-                searchStudent('Thai Firstname', thaiNameInput.value); // Use correct column name
-            } else if (englishNameInput.value) {
-                searchStudent('English Firstname', englishNameInput.value); // Use correct column name
-            }
-        });
+        // --- START: REVISED SEARCH LOGIC ---
+        function handleSearch() {
+            // 1. สร้าง Object สำหรับเก็บเงื่อนไขการค้นหา
+            const searchParams = {};
+            const idValue = studentIdInput.value.trim();
+            const thaiValue = thaiNameInput.value.trim();
+            const englishValue = englishNameInput.value.trim();
 
-        studentIdInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && studentIdInput.value) searchStudent('ID', studentIdInput.value); });
-        thaiNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && thaiNameInput.value) searchStudent('Thai Firstname', thaiNameInput.value); });
-        englishNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && englishNameInput.value) searchStudent('English Firstname', englishNameInput.value); });
-        // --- END: MODIFIED SEARCH LOGIC ---
+            if (idValue) {
+                searchParams['ID'] = idValue;
+            }
+            if (thaiValue) {
+                // ค้นหาแบบ Contains โดยใส่ * (Wildcard)
+                searchParams['Thai Firstname'] = `*${thaiValue}*`;
+            }
+            if (englishValue) {
+                // ค้นหาแบบ Contains โดยใส่ * (Wildcard)
+                searchParams['English Firstname'] = `*${englishValue}*`;
+            }
+            
+            // 2. ตรวจสอบว่ามีเงื่อนไขการค้นหาอย่างน้อย 1 อย่างหรือไม่
+            if (Object.keys(searchParams).length === 0) {
+                alert("Please enter at least one search criterion.");
+                return;
+            }
+
+            // 3. เรียกฟังก์ชันค้นหาหลัก
+            searchStudent(searchParams);
+        }
+
+        searchBtn.addEventListener('click', handleSearch);
+        studentIdInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSearch(); });
+        thaiNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSearch(); });
+        englishNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSearch(); });
 
         approveAllBtn.addEventListener('click', approveAllVisibleStudents);
     
-        function searchStudent(key, value) {
-            if (!value) return;
+        function searchStudent(params) {
             if (displayedStudentIds.size >= MAX_STUDENTS) {
                 maxStudentsMessage.style.display = 'block';
                 return;
             }
+
             loadingDiv.style.display = 'block';
             disableSearchInputs(true);
             
-            // Construct the search URL with the correct key and value
-            const searchUrl = `${SCRIPT_URL}/search?${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+            // 4. สร้าง Query String จาก Object ของพารามิเตอร์
+            const queryString = Object.entries(params)
+                .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+                .join('&');
+            
+            const searchUrl = `${SCRIPT_URL}/search?${queryString}`;
             
             fetch(searchUrl).then(response => response.json()).then(res => {
                 if (res && res.length > 0) {
                     addStudentsToDisplay(res);
                 } else {
-                    alert('Student not found');
+                    alert('ID or Name do not match. Please try again.');
                 }
             }).catch(error => {
                 console.error('Error:', error);
@@ -146,12 +168,12 @@
             }).finally(() => {
                 loadingDiv.style.display = 'none';
                 disableSearchInputs(false);
-                // Clear the input fields after search
                 studentIdInput.value = '';
                 thaiNameInput.value = '';
                 englishNameInput.value = '';
             });
         }
+        // --- END: REVISED SEARCH LOGIC ---
         
         function addStudentsToDisplay(students) {
             const template = document.getElementById('studentCardTemplate');
@@ -223,7 +245,7 @@
             fetch(`${SCRIPT_URL}/ID/${studentID}`, {
                 method: 'PATCH',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data: { data: dataToUpdate } })
+                body: JSON.stringify({ data: dataToUpdate })
             }).then(res => res.json()).then(data => {
                 if (data.updated > 0) {
                     alert(`Student ID ${studentID} status set to '${status}'.`);
