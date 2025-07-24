@@ -30,7 +30,7 @@
         .student-card .country-info { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666; margin-bottom: 20px; height: 20px; }
         .student-card .eng-name, .student-details { width: 100%; }
         .student-card .eng-name { font-size: 18px; font-weight: bold; text-align:center; }
-        .student-details .detail-row { display: grid; grid-template-columns: 80px 1fr; margin-bottom: 8px; }
+        .student-details .detail-row { display: grid; grid-template-columns: 80px 1fr; margin-bottom: 8px; gap: 10px; }
         .student-details .detail-row span:first-child { font-weight: bold; color: #555; }
         .student-card textarea { width: calc(100% - 22px); height: 70px; margin-top: 20px; padding: 10px; border-radius: 4px; border: 1px solid #CCC; }
         .student-card .action-buttons { display: flex; justify-content: space-between; width: 100%; margin-top: 15px; }
@@ -98,7 +98,8 @@
                 </div>
                 <div class="student-details">
                     <div class="detail-row"><span>ID:</span><span class="info-id"></span></div>
-                    <div class="detail-row"><span>Thai Name:</span><span class="info-thai-name"></span></div>
+                    <div class="detail-row"><span>FirstName:</span><span class="info-thai-fname"></span></div>
+                    <div class="detail-row"><span>LastName:</span><span class="info-thai-lname"></span></div>
                     <div class="detail-row"><span>Birth Date:</span><span class="info-birth-date"></span></div>
                     <div class="detail-row"><span>Age:</span><span class="info-age"></span></div>
                     <div class="detail-row"><span>Province:</span><span class="info-province"></span></div>
@@ -207,10 +208,14 @@
         const cardWrapper = template.content.cloneNode(true);
         const cardElement = cardWrapper.querySelector('.student-card');
         
-        // --- ส่วนของการเติมข้อมูลนักเรียน (เหมือนเดิม) ---
         cardWrapper.querySelector('.student-card-wrapper').dataset.id = student['ID'];
         cardWrapper.querySelector('.profile-image').src = student['Image'] || 'https://via.placeholder.com/100';
-        cardWrapper.querySelector('.eng-name').textContent = `${student['English Firstname']} ${student['English Lastname']}`;
+        
+        // --- START: แก้ไขการแสดงผลชื่อภาษาอังกฤษ ---
+        // ใช้ innerHTML เพื่อให้ <br> ทำงานเป็นการขึ้นบรรทัดใหม่
+        cardWrapper.querySelector('.eng-name').innerHTML = `${student['English Firstname']}<br>${student['English Lastname']}`;
+        // --- END: แก้ไขการแสดงผลชื่อภาษาอังกฤษ ---
+
         const countryName = student['Country'];
         if (countryName && countryName.trim() !== '' && countryName !== 'N/A') {
             let countryCode = (countryCodeMap[countryName] || (countryName.length === 2 ? countryName : 'xx')).toLowerCase();
@@ -222,7 +227,13 @@
             cardElement.classList.add('no-country');
         }
         cardWrapper.querySelector('.info-id').textContent = student['ID'];
-        cardWrapper.querySelector('.info-thai-name').textContent = `${student['Thai Firstname']} ${student['Thai Lastname']}`;
+        
+        // --- START: แก้ไขการแสดงผลชื่อภาษาไทย ---
+        // เติมข้อมูลลงใน element ใหม่ที่เราสร้างไว้
+        cardWrapper.querySelector('.info-thai-fname').textContent = student['Thai Firstname'];
+        cardWrapper.querySelector('.info-thai-lname').textContent = student['Thai Lastname'];
+        // --- END: แก้ไขการแสดงผลชื่อภาษาไทย ---
+
         const birthDateStr = student['Date of Birth'];
         if (birthDateStr) {
             const dateParts = birthDateStr.split('/');
@@ -239,51 +250,36 @@
         cardWrapper.querySelector('.info-eng-tech-gpa').textContent = student['เกรดวิชาภาษาอังกฤษเทอมก่อนหน้า'] || student['เกรดวิชาวิทยาศาสตร์เทคโนโลยีคอมพิวเตอร์'];
         cardWrapper.querySelector('.info-study-status').textContent = student['สถานะการเรียน'] || student['อยู่ระหว่างการศึกษา'];
         
-        // --- START: ตรรกะใหม่สำหรับจัดการสถานะ ---
         const approveBtn = cardWrapper.querySelector('.btn-approve');
         const disapproveBtn = cardWrapper.querySelector('.btn-disapprove');
         const commentsTextarea = cardWrapper.querySelector('.comments-textarea');
         const status = student['Status'];
 
-        // ตรวจสอบว่ามีสถานะ 'Approve' หรือ 'Disapprove' อยู่แล้วหรือไม่
         if (status && (status === 'Approve' || status === 'Disapprove')) {
-            // ---- ถ้ามีสถานะอยู่แล้ว ----
-            
-            // 1. ทำให้การ์ดเป็นสีเทา และเพิ่ม class 'decision-made'
             cardElement.style.opacity = '0.5';
             cardWrapper.querySelector('.student-card-wrapper').classList.add('decision-made');
-            
-            // 2. แสดงคอมเมนต์เดิม (ถ้ามี) และปิดการแก้ไข
             commentsTextarea.value = student['Comment'] || '';
             commentsTextarea.disabled = true;
-            
-            // 3. ปิดปุ่มทั้งสองก่อน
             approveBtn.disabled = true;
             disapproveBtn.disabled = true;
-            
-            // 4. แสดงผลปุ่มตามสถานะ
             if (status === 'Approve') {
-                disapproveBtn.style.display = 'none'; // ซ่อนปุ่ม Disapprove
-                approveBtn.textContent = 'Approved';   // เปลี่ยนข้อความปุ่ม Approve
-            } else { // status === 'Disapprove'
-                approveBtn.style.display = 'none';   // ซ่อนปุ่ม Approve
-                disapproveBtn.textContent = 'Disapproved'; // เปลี่ยนข้อความปุ่ม Disapprove
+                disapproveBtn.style.display = 'none';
+                approveBtn.textContent = 'Approved';
+            } else {
+                approveBtn.style.display = 'none';
+                disapproveBtn.textContent = 'Disapproved';
             }
-
         } else {
-            // ---- ถ้ายังไม่มีสถานะ (ทำงานแบบเดิม) ----
             approveBtn.addEventListener('click', () => submitDecision(student['ID'], 'Approve', commentsTextarea.value, approveBtn, disapproveBtn));
             disapproveBtn.addEventListener('click', () => submitDecision(student['ID'], 'Disapprove', commentsTextarea.value, approveBtn, disapproveBtn));
         }
-        // --- END: ตรรกะใหม่สำหรับจัดการสถานะ ---
 
         studentListContainer.appendChild(cardWrapper);
     });
     if (displayedStudentIds.size < MAX_STUDENTS) {
         maxStudentsMessage.style.display = 'none';
     }
-}
-        
+}      
         // --- START: แก้ไขฟังก์ชัน submitDecision ---
         function submitDecision(studentID, status, comment, approveBtn, disapproveBtn) {
     approveBtn.disabled = true;
