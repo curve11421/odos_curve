@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ODOS Student Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css"
-    />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
         body { font-family: 'Sarabun', sans-serif; background-color: #FEFDF7; margin: 0; padding: 20px; color: #333; }
@@ -27,45 +22,19 @@
         .btn-clear { background-color: #E0E0E0; color: #333; }
         .btn-approve-all { background-color: #4CAF50; color: white; float: right; margin-bottom: 10px; }
         .loading, .message { text-align: center; padding: 20px; font-size: 18px; }
-        
-        /* แก้ไข Layout กลับมาเป็นแบบตัดบรรทัด */
-        .student-list-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
+        .student-list-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px; }
         .student-card-wrapper { flex-shrink: 0; }
-        .student-card { 
-            width: 219px; 
-            padding: 20px; 
-            background-color: #FEFDF7; 
-            border: 1px solid #E0E0E0; 
-            border-radius: 8px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
+        .student-card { width: 219px; padding: 20px; background-color: #FEFDF7; border: 1px solid #E0E0E0; border-radius: 8px; display: flex; flex-direction: column; align-items: center; }
         .student-card.no-country { border: 2px solid red; }
         .student-card .profile-pic img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #F8D442; margin-bottom: 15px; }
         .student-card .country-info { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666; margin-bottom: 20px; height: 20px; }
         .student-card .eng-name, .student-details { width: 100%; }
         .student-card .eng-name { font-size: 18px; font-weight: bold; text-align:center; }
-        .student-details .detail-row { 
-            display: grid; 
-            grid-template-columns: 80px 1fr; 
-            margin-bottom: 8px; 
-        }
+        .student-details .detail-row { display: grid; grid-template-columns: 80px 1fr; margin-bottom: 8px; }
         .student-details .detail-row span:first-child { font-weight: bold; color: #555; }
         .student-card textarea { width: calc(100% - 22px); height: 70px; margin-top: 20px; padding: 10px; border-radius: 4px; border: 1px solid #CCC; }
         .student-card .action-buttons { display: flex; justify-content: space-between; width: 100%; margin-top: 15px; }
-        .btn-action {
-            width: 48%;
-            padding: 10px;
-            font-size: 14px;
-        }
+        .btn-action { width: 48%; padding: 10px; font-size: 14px; }
         .btn-approve { background-color: #4CAF50; color: white; }
         .btn-disapprove { background-color: #F44336; color: white; }
         .max-students-message { background-color: #FFF3CD; color: #856404; padding: 10px; border-radius: 4px; margin: 10px 0; text-align: center; display: none; }
@@ -80,7 +49,7 @@
                 <div class="form-group"><label for="studentId">Student ID:</label><input type="text" id="studentId" placeholder="Enter Student ID"></div>
                 <div class="form-group"><label for="thaiName">Thai Name:</label><input type="text" id="thaiName" placeholder="Enter Thai Name"></div>
                 <div class="form-group"><label for="englishName">English Name:</label><input type="text" id="englishName" placeholder="Enter English Name"></div>
-                <div class="button-group"><button class="btn btn-add">Search ID</button><button class="btn btn-clear" onclick="clearAll()">Clear All</button></div>
+                <div class="button-group"><button class="btn btn-add">Search</button><button class="btn btn-clear" onclick="clearAll()">Clear All</button></div>
             </div>
         </div>
         <div id="maxStudentsMessage" class="max-students-message">Maximum of 5 students displayed. Clear some to add more.</div>
@@ -128,38 +97,29 @@
         const englishNameInput = document.getElementById('englishName');
         const loadingDiv = document.getElementById('loading');
         const studentListContainer = document.getElementById('studentListContainer');
-        const searchIdBtn = document.querySelector('.btn-add');
+        const searchBtn = document.querySelector('.btn-add'); // Changed from searchIdBtn
         const approveAllBtn = document.querySelector('.btn-approve-all');
         const maxStudentsMessage = document.getElementById('maxStudentsMessage');
         const displayedStudentIds = new Set();
-        const countryCodeMap = { 
-            'USA': 'us', 
-            'Japan': 'jp', 
-            'China': 'cn', 
-            'Singapore': 'sg', 
-            'Finland': 'fi', 
-            'Australia': 'au', 
-            'Korea': 'kr', 
-            'เกาหลีใต้': 'kr',
-            'Thailand': 'th', 
-            'United States': 'us', 
-            'United Kingdom': 'gb', 
-            'UK': 'gb',
-            'Canada': 'ca', 
-            'Germany': 'de', 
-            'France': 'fr', 
-            'Italy': 'it', 
-            'Spain': 'es', 
-            'India': 'in', 
-            'Brazil': 'br', 
-            'Russia': 'ru' ,
-            'Estonia': 'ee'
-        };
-    
-        searchIdBtn.addEventListener('click', () => { if (studentIdInput.value) { searchStudent('studentID', studentIdInput.value); studentIdInput.value = ''; } });
-        studentIdInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && studentIdInput.value) { searchStudent('studentID', studentIdInput.value); studentIdInput.value = ''; } });
-        thaiNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && thaiNameInput.value) searchStudent('thaiName', thaiNameInput.value); });
-        englishNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && englishNameInput.value) searchStudent('englishName', englishNameInput.value); });
+        const countryCodeMap = { 'USA': 'us', 'Japan': 'jp', 'China': 'cn', 'Singapore': 'sg', 'Finland': 'fi', 'Australia': 'au', 'Korea': 'kr', 'เกาหลีใต้': 'kr', 'Thailand': 'th', 'United States': 'us', 'United Kingdom': 'gb', 'UK': 'gb', 'Canada': 'ca', 'Germany': 'de', 'France': 'fr', 'Italy': 'it', 'Spain': 'es', 'India': 'in', 'Brazil': 'br', 'Russia': 'ru' , 'Estonia': 'ee' };
+        
+        // --- START: MODIFIED SEARCH LOGIC ---
+        searchBtn.addEventListener('click', () => {
+            // Determine which field has a value and call the search function
+            if (studentIdInput.value) {
+                searchStudent('ID', studentIdInput.value);
+            } else if (thaiNameInput.value) {
+                searchStudent('Thai Firstname', thaiNameInput.value); // Use correct column name
+            } else if (englishNameInput.value) {
+                searchStudent('English Firstname', englishNameInput.value); // Use correct column name
+            }
+        });
+
+        studentIdInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && studentIdInput.value) searchStudent('ID', studentIdInput.value); });
+        thaiNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && thaiNameInput.value) searchStudent('Thai Firstname', thaiNameInput.value); });
+        englishNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && englishNameInput.value) searchStudent('English Firstname', englishNameInput.value); });
+        // --- END: MODIFIED SEARCH LOGIC ---
+
         approveAllBtn.addEventListener('click', approveAllVisibleStudents);
     
         function searchStudent(key, value) {
@@ -170,8 +130,10 @@
             }
             loadingDiv.style.display = 'block';
             disableSearchInputs(true);
-            const searchColumn = (key === 'studentID') ? 'ID' : key;
-            const searchUrl = `${SCRIPT_URL}/search?${searchColumn}=${encodeURIComponent(value)}`;
+            
+            // Construct the search URL with the correct key and value
+            const searchUrl = `${SCRIPT_URL}/search?${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+            
             fetch(searchUrl).then(response => response.json()).then(res => {
                 if (res && res.length > 0) {
                     addStudentsToDisplay(res);
@@ -184,10 +146,13 @@
             }).finally(() => {
                 loadingDiv.style.display = 'none';
                 disableSearchInputs(false);
+                // Clear the input fields after search
+                studentIdInput.value = '';
+                thaiNameInput.value = '';
+                englishNameInput.value = '';
             });
         }
         
-        // ===== จุดที่แก้ไข =====
         function addStudentsToDisplay(students) {
             const template = document.getElementById('studentCardTemplate');
             students.forEach(student => {
@@ -202,21 +167,17 @@
                 cardWrapper.querySelector('.profile-image').src = student['Image'] || 'https://via.placeholder.com/100';
                 cardWrapper.querySelector('.eng-name').textContent = `${student['English Firstname']} ${student['English Lastname']}`;
                 
-                // --- เริ่มตรรกะการหา Flag ที่แก้ไขใหม่ ---
                 const countryName = student['Country'];
                 if (countryName && countryName.trim() !== '' && countryName !== 'N/A') {
                     let countryCode;
                     if (countryCodeMap[countryName]) {
-                        // 1. ถ้าเจอชื่อเต็มใน Map (เช่น "United States") ให้ใช้รหัสจาก Map
                         countryCode = countryCodeMap[countryName];
                     } else if (countryName.length === 2) {
-                        // 2. ถ้าไม่เจอ แต่ข้อมูลที่ได้มามี 2 ตัวอักษร (เช่น "us") ให้ถือว่าเป็นรหัสอยู่แล้ว
                         countryCode = countryName;
                     } else {
-                        // 3. ถ้าไม่เข้าเงื่อนไขทั้งหมด ให้เป็นธงว่าง
                         countryCode = 'xx';
                     }
-                    countryCode = countryCode.toLowerCase(); // แปลงเป็นตัวพิมพ์เล็กเสมอ
+                    countryCode = countryCode.toLowerCase();
     
                     const flagElement = cardWrapper.querySelector('.flag-icon');
                     flagElement.className = `fi fi-${countryCode} flag-icon`;
@@ -225,7 +186,6 @@
                     cardWrapper.querySelector('.country-info').innerHTML = '<span>No Country Data</span>';
                     cardElement.classList.add('no-country');
                 }
-                // --- สิ้นสุดตรรกะการหา Flag ---
     
                 cardWrapper.querySelector('.info-id').textContent = student['ID'];
                 cardWrapper.querySelector('.info-thai-name').textContent = `${student['Thai Firstname']} ${student['Thai Lastname']}`;
@@ -263,7 +223,7 @@
             fetch(`${SCRIPT_URL}/ID/${studentID}`, {
                 method: 'PATCH',
                 headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data: dataToUpdate })
+                body: JSON.stringify({ data: { data: dataToUpdate } })
             }).then(res => res.json()).then(data => {
                 if (data.updated > 0) {
                     alert(`Student ID ${studentID} status set to '${status}'.`);
